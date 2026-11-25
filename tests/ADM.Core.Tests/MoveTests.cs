@@ -3,6 +3,7 @@ using ADM.Core;
 namespace ADM.Core.Tests;
 
 /// <summary>Move/Rename: a download's file, finished or not, goes to a new folder or name and keeps its progress.</summary>
+[Collection(nameof(SpeedTests))]
 public sealed class MoveTests : IDisposable
 {
     const int MB = 1024 * 1024;

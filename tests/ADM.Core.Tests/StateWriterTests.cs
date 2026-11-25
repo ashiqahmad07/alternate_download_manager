@@ -4,6 +4,7 @@ using ADM.Core;
 namespace ADM.Core.Tests;
 
 /// <summary>The state saved off the UI thread: the newest save lands, none older after it, and a failure is tried again.</summary>
+[Collection(nameof(SpeedTests))]
 public sealed class StateWriterTests : IDisposable
 {
     static readonly TimeSpan Wait = TimeSpan.FromSeconds(10);

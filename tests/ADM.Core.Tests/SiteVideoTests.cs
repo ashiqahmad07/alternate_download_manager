@@ -7,6 +7,7 @@ using ADM.Core;
 namespace ADM.Core.Tests;
 
 // The fixtures are yt-dlp answers cut down by hand, in tests/fixtures/site/.
+[Collection(nameof(SpeedTests))]
 public sealed class SiteVideoTests : IDisposable
 {
     readonly string _dir = Path.Combine(Path.GetTempPath(), "adm-tests", Guid.NewGuid().ToString("N"));

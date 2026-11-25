@@ -4,6 +4,7 @@ using ADM.Core;
 namespace ADM.Core.Tests;
 
 /// <summary>A site's video, read by a stand-in for yt-dlp whose formats name files on <see cref="TestServer"/>, and two files joined.</summary>
+[Collection(nameof(SpeedTests))]
 public sealed class SiteDownloadTests : IDisposable
 {
     readonly string _dir = Path.Combine(Path.GetTempPath(), "adm-tests", Guid.NewGuid().ToString("N"));

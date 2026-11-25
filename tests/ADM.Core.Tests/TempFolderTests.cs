@@ -6,6 +6,7 @@ namespace ADM.Core.Tests;
 /// The temporary folder: part files kept away from the download folder until they are complete, and resumes
 /// that ignore a server changing a file's modification time.
 /// </summary>
+[Collection(nameof(SpeedTests))]
 public sealed class TempFolderTests : IDisposable
 {
     const int MB = 1024 * 1024;

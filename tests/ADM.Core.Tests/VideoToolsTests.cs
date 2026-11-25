@@ -2,6 +2,7 @@ using ADM.Core;
 
 namespace ADM.Core.Tests;
 
+[Collection(nameof(SpeedTests))]
 public sealed class VideoToolsTests : IDisposable
 {
     readonly string _dir = Path.Combine(Path.GetTempPath(), "adm-tests", Guid.NewGuid().ToString("N"));
