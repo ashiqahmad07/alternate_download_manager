@@ -1,0 +1,9 @@
+{
+  "id": "v1",
+  "title": "Only HLS",
+  "webpage_url": "https://videos.example/v1",
+  "formats": [
+    { "format_id": "hls-720", "url": "https://cdn.example/v1/720.m3u8", "protocol": "m3u8_native", "ext": "mp4", "vcodec": "avc1.64001f", "acodec": "mp4a.40.2", "width": 1280, "height": 720, "tbr": 2000 },
+    { "format_id": "hls-480", "url": "https://cdn.example/v1/480.m3u8", "protocol": "m3u8_native", "ext": "mp4", "vcodec": "avc1.4d401e", "acodec": "mp4a.40.2", "width": 854, "height": 480, "tbr": 900 }
+  ]
+}

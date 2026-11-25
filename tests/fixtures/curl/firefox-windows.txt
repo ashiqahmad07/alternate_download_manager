@@ -1,0 +1,10 @@
+curl.exe ^"https://files.example.com/pack/archive.zip?token=abc^%^20def^&part=1^" ^
+  --compressed ^
+  -H ^"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0^" ^
+  -H ^"Accept: text/html,application/xhtml+xml^" ^
+  -H ^"Accept-Language: en-US,en;q=0.5^" ^
+  -H ^"Accept-Encoding: gzip, deflate, br, zstd^" ^
+  -H ^"Referer: https://files.example.com/pack/^" ^
+  -H ^"Connection: keep-alive^" ^
+  -H ^"Cookie: session=abc123; theme=dark^" ^
+  -H ^"Upgrade-Insecure-Requests: 1^"

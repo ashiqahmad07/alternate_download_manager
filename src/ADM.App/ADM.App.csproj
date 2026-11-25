@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>ADM</AssemblyName>
+    <AssemblyTitle>Alternate Download Manager</AssemblyTitle>
+    <Product>Alternate Download Manager</Product>
+    <RootNamespace>ADM.App</RootNamespace>
+    <ApplicationIcon>Assets\ADM.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Beside the app, as the pattern for a translation; inside it, as what a missing text falls back to. -->
+    <None Remove="Languages\*.json" />
+    <Content Include="Languages\*.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Languages\en.json" LogicalName="ADM.App.Languages.en.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Inside the exe for Explorer and the taskbar through ApplicationIcon; this one is what the windows and the tray read. -->
+    <EmbeddedResource Include="Assets\ADM.ico" LogicalName="ADM.App.Assets.ADM.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ADM.Core\ADM.Core.csproj" />
+  </ItemGroup>
+
+</Project>

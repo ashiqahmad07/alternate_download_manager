@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Alternate Download Manager Integration",
+  "description": "Sends browser downloads and detected media streams to Alternate Download Manager.",
+  "version": "1.1.0",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnEHTeqFUfPLBdi0YKnMaynFd3y2iLe7f48FVMiO1vCeGhKpPVh2dzWEVqcpfK9ehGoOeb4dXFq+pAfzQHWyNXbOvWTw7XVkxLINGkvHPus69YoZw1/FzE2SQtuLvUgx/BA0uwyYHqylfpKSkoPEZbZ6itKJgH865bwHRTA5yhlCAtJt4pYtWm7iwZZvx3o1xPP1KTOVOWRbhRJwTSzEBcy7YeoOSRXujyB/8Aj1EUiDgR1xrJHkxHU0yEgx9UfJudMpas8j+o/yNW4dkWpD7EWDOiHVPwZIj4ROcp6bdftLtC4TwfgQAApYvkcWy2Dh+aCqmZFCRlWWoxDTp6GZfSQIDAQAB",
+  "minimum_chrome_version": "116",
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    { "matches": ["<all_urls>"], "js": ["content.js"], "all_frames": true, "run_at": "document_start" }
+  ],
+  "icons": { "16": "icon16.png", "32": "icon32.png", "48": "icon48.png", "128": "icon128.png" },
+  "action": { "default_title": "ADM", "default_popup": "popup.html", "default_icon": { "16": "icon16.png", "32": "icon32.png" } },
+  "permissions": ["downloads", "nativeMessaging", "cookies", "contextMenus", "webRequest", "storage", "tabs", "scripting", "proxy"],
+  "host_permissions": ["<all_urls>"]
+}

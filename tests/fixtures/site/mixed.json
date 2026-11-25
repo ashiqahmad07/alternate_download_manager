@@ -1,0 +1,11 @@
+{
+  "id": "m1",
+  "title": "Mixed containers",
+  "webpage_url": "https://www.youtube.com/watch?v=m1",
+  "formats": [
+    { "format_id": "137", "url": "https://rr1.googlevideo.com/videoplayback?itag=137", "protocol": "https", "ext": "mp4", "vcodec": "avc1.640028", "acodec": "none", "width": 1920, "height": 1080, "fps": 30, "tbr": 2500 },
+    { "format_id": "401", "url": "https://rr1.googlevideo.com/videoplayback?itag=401", "protocol": "https", "ext": "mp4", "vcodec": "av01.0.12M.08", "acodec": "none", "width": 3840, "height": 2160, "fps": 30, "tbr": 9000 },
+    { "format_id": "140", "url": "https://rr1.googlevideo.com/videoplayback?itag=140", "protocol": "https", "ext": "m4a", "vcodec": "none", "acodec": "mp4a.40.2", "tbr": 129 },
+    { "format_id": "251", "url": "https://rr1.googlevideo.com/videoplayback?itag=251", "protocol": "https", "ext": "webm", "vcodec": "none", "acodec": "opus", "tbr": 140 }
+  ]
+}

@@ -1,0 +1,9 @@
+curl --url ^"https://files.example.com/pack/archive.zip?token=abc^%^20def^&part=1^" ^
+  -H ^"accept: text/html,application/xhtml+xml^" ^
+  -H ^"accept-language: en-US,en;q=0.9^" ^
+  -b ^"session=abc123; theme=dark^" ^
+  -H ^"priority: u=0, i^" ^
+  -H ^"referer: https://files.example.com/pack/^" ^
+  -H ^"sec-fetch-dest: document^" ^
+  -H ^"upgrade-insecure-requests: 1^" ^
+  -H ^"user-agent: Mozilla/5.0 ^(Windows NT 10.0; Win64; x64^) AppleWebKit/537.36 ^(KHTML, like Gecko^) Chrome/130.0.0.0 Safari/537.36^"

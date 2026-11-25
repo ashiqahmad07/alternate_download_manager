@@ -1,0 +1,28 @@
+<local:ThemedWindow x:Class="ADM.App.TwoCancelsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="{l:T twocancels.stop_taking_over_this_download}" Width="560" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="True">
+    <StackPanel Margin="18">
+        <TextBlock TextWrapping="Wrap"
+                   Text="{l:T twocancels.this_is_second_time_you_cancelled}" />
+
+        <CheckBox x:Name="SiteBox" Margin="0,14,0,0">
+            <TextBlock TextWrapping="Wrap"><Run x:Name="SiteBefore" /><Run x:Name="SiteText" FontWeight="SemiBold" /><Run x:Name="SiteAfter" /></TextBlock>
+        </CheckBox>
+        <CheckBox x:Name="AddressBox" Margin="0,8,0,0" IsChecked="True">
+            <TextBlock x:Name="AddressText" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" />
+        </CheckBox>
+
+        <TextBlock Foreground="{DynamicResource MutedText}" TextWrapping="Wrap" Margin="0,14,0,0"
+                   Text="{l:T twocancels.both_lists_can_be_edited_in}" />
+        <CheckBox x:Name="DontAskBox" Margin="0,10,0,0" Content="{l:T twocancels.dont_ask_this_again_options_general}" />
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+            <Button Style="{StaticResource DialogButton}" Content="{l:T common.ok}" IsDefault="True" Click="Ok_Click" />
+            <Button Style="{StaticResource DialogButton}" Content="{l:T common.cancel}" IsCancel="True" />
+        </StackPanel>
+    </StackPanel>
+</local:ThemedWindow>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MPD xmlns="urn:mpeg:dash:schema:mpd:2011" type="static" mediaPresentationDuration="PT6S">
+  <Period>
+    <AdaptationSet mimeType="video/mp4">
+      <Representation id="both" bandwidth="1000000">
+        <BaseURL>both.mp4</BaseURL>
+        <SegmentBase indexRange="800-899">
+          <Initialization range="0-799" />
+        </SegmentBase>
+      </Representation>
+      <Representation id="index-only" bandwidth="500000">
+        <BaseURL>index-only.mp4</BaseURL>
+        <SegmentBase indexRange="500-599" />
+      </Representation>
+      <Representation id="init-elsewhere" bandwidth="250000">
+        <BaseURL>init-elsewhere.mp4</BaseURL>
+        <SegmentBase indexRange="0-99">
+          <Initialization sourceURL="init.mp4" />
+        </SegmentBase>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

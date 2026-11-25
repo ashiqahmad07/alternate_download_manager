@@ -1,0 +1,167 @@
+<local:ThemedWindow x:Class="ADM.App.AddDownloadWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="{l:T adddownload.download_file_info}" Width="640" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="True">
+    <!-- Laid out as IDM's "Download File Info": labels set against their boxes, where the file goes in the middle,
+         what it is on the right, and the three buttons under the boxes, from the left edge of the boxes to the right.
+         What most downloads never need waits behind "More options", in the space IDM leaves beside the description. -->
+    <StackPanel Margin="18,16,18,18" Grid.IsSharedSizeScope="True">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" MinWidth="110" SharedSizeGroup="Side" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Style="{StaticResource FieldLabel}" HorizontalAlignment="Right" Text="{l:T adddownload.url}" />
+            <TextBox x:Name="UrlBox" Grid.Column="1" Padding="4,3" LostFocus="UrlBox_LostFocus"
+                     AutomationProperties.Name="{l:T adddownload.url}" />
+            <TextBlock x:Name="CommandNote" Grid.Row="1" Grid.Column="1" Margin="0,4,0,0"
+                       Foreground="{DynamicResource MutedText}" TextWrapping="Wrap" Visibility="Collapsed" />
+
+            <!-- One row, beside the panel on the right: a cell spanning several rows that size to their content
+                 would have its height shared out among them, and stretch the boxes. -->
+            <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock Style="{StaticResource FieldLabel}" HorizontalAlignment="Right" Text="{l:T adddownload.category}" Margin="0,12,10,0" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,12,0,0">
+                    <ComboBox x:Name="CategoryBox" Width="180" SelectionChanged="CategoryBox_SelectionChanged"
+                              AutomationProperties.Name="{l:T adddownload.category}" />
+                    <Button Content="+" Width="28" Margin="6,0,0,0" Click="NewCategory_Click"
+                            ToolTip="{l:T adddownload.new_category}" AutomationProperties.Name="{l:T adddownload.new_category}" />
+                </StackPanel>
+
+                <TextBlock Grid.Row="1" Style="{StaticResource FieldLabel}" HorizontalAlignment="Right" Text="{l:T adddownload.save_as}" Margin="0,10,10,0" />
+                <DockPanel Grid.Row="1" Grid.Column="1" Margin="0,10,0,0">
+                    <Button DockPanel.Dock="Right" Content="..." Width="32" Margin="6,0,0,0" Click="Browse_Click"
+                            ToolTip="{l:T adddownload.choose_save_as}" AutomationProperties.Name="{l:T adddownload.choose_save_as}" />
+                    <TextBox x:Name="SaveAsBox" Padding="4,3" TextChanged="SaveAsBox_TextChanged" LostFocus="SaveAsBox_LostFocus"
+                             AutomationProperties.Name="{l:T adddownload.save_as}" />
+                </DockPanel>
+
+                <!-- A group frame with the tick box on its top edge, as IDM's: the box's own background breaks the line. -->
+                <Grid Grid.Row="2" Grid.Column="1" Margin="0,8,0,0">
+                    <Border Margin="0,9,0,0" Padding="10,16,10,10" CornerRadius="3"
+                            BorderThickness="1" BorderBrush="{DynamicResource ControlBorder}">
+                        <TextBox x:Name="RememberFolderBox" Padding="4,3" IsReadOnly="True" IsTabStop="False"
+                                 Foreground="{DynamicResource MutedText}" IsEnabled="{Binding IsChecked, ElementName=RememberBox}" />
+                    </Border>
+                    <Border HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,0,0,0" Padding="4,0"
+                            Background="{DynamicResource WindowBg}">
+                        <CheckBox x:Name="RememberBox" IsChecked="True" />
+                    </Border>
+                </Grid>
+            </Grid>
+
+            <!-- What the file is: its kind, its size, and a look inside an archive before it downloads. -->
+            <DockPanel Grid.Row="2" Grid.Column="2" Margin="14,12,0,0">
+                <Button x:Name="PreviewButton" DockPanel.Dock="Bottom" HorizontalAlignment="Center" MinWidth="86" Padding="12,4"
+                        Content="{l:T adddownload.preview}" IsEnabled="False"
+                        Click="Preview_Click" ToolTip="{l:T adddownload.preview_hint}" ToolTipService.ShowOnDisabled="True" />
+                <StackPanel>
+                    <Image x:Name="FileIcon" Width="32" Height="32" Margin="0,6,0,8" HorizontalAlignment="Center" />
+                    <TextBlock x:Name="SizeText" HorizontalAlignment="Center" FontWeight="SemiBold" />
+                    <TextBlock x:Name="ResumeText" HorizontalAlignment="Center" Margin="0,2,0,8"
+                               Foreground="{DynamicResource MutedText}" FontSize="{DynamicResource AppFontSizeSmall}" />
+                </StackPanel>
+            </DockPanel>
+
+            <TextBlock Grid.Row="3" Style="{StaticResource FieldLabel}" HorizontalAlignment="Right" Text="{l:T common.description}" Margin="0,12,10,0" />
+            <TextBox x:Name="DescriptionBox" Grid.Row="3" Grid.Column="1" Padding="4,3" Margin="0,12,0,0"
+                     AutomationProperties.Name="{l:T common.description}" />
+
+            <Button x:Name="MoreButton" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" Margin="14,12,0,0" Padding="4,2"
+                    Style="{StaticResource ToolButton}" Click="More_Click" AutomationProperties.Name="{l:T adddownload.more_options}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="MoreGlyph" Style="{StaticResource Glyph}" FontSize="10" Margin="0,0,6,0" VerticalAlignment="Center" />
+                    <TextBlock Text="{l:T adddownload.more_options}" />
+                </StackPanel>
+            </Button>
+
+            <TextBlock x:Name="InfoText" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,8,0,0"
+                       Foreground="{DynamicResource MutedText}" TextWrapping="Wrap" Visibility="Collapsed" />
+        </Grid>
+
+        <!-- The labels and the boxes' right edges line up with the ones above, through the shared size groups. -->
+        <Grid x:Name="MorePanel" Margin="0,4,0,0" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" SharedSizeGroup="Side" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Style="{StaticResource FieldLabel}" HorizontalAlignment="Right" Text="{l:T common.connections}" Margin="0,10,10,0" />
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,10,0,0">
+                <TextBox x:Name="ConnectionsBox" Width="60" Padding="4,3" AutomationProperties.Name="{l:T common.connections}" />
+                <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T adddownload.queue}" Margin="20,0,10,0" />
+                <ComboBox x:Name="QueueBox" Width="160" DisplayMemberPath="Name" AutomationProperties.Name="{l:T adddownload.queue}" />
+            </StackPanel>
+
+            <CheckBox x:Name="UseLoginBox" Grid.Row="1" Grid.Column="1" Margin="0,12,0,0" Content="{l:T adddownload.use_authorization}" />
+            <Grid Grid.Row="2" Grid.Column="1" Margin="0,8,0,0" IsEnabled="{Binding IsChecked, ElementName=UseLoginBox}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T common.user_name}" />
+                <TextBox x:Name="LoginUserBox" Grid.Column="1" Padding="4,3" AutomationProperties.Name="{l:T common.user_name}" />
+                <TextBlock Grid.Column="2" Style="{StaticResource FieldLabel}" Margin="12,0,10,0" Text="{l:T common.password}" />
+                <PasswordBox x:Name="LoginPasswordBox" Grid.Column="3" Padding="4,3" LostFocus="LoginPassword_LostFocus"
+                             AutomationProperties.Name="{l:T common.password}" />
+            </Grid>
+
+            <TextBlock x:Name="HashLabel" Grid.Row="3" Style="{StaticResource FieldLabel}" HorizontalAlignment="Right" Text="{l:T common.sha256}" Margin="0,10,10,0" />
+            <TextBox x:Name="HashBox" Grid.Row="3" Grid.Column="1" Padding="4,3" Margin="0,10,0,0"
+                     AutomationProperties.Name="{l:T common.sha256}" ToolTip="{l:T common.sha256_hint}" />
+        </Grid>
+
+        <!-- Under the boxes, as IDM's: one button at each edge and one in the middle, all three the same width. -->
+        <Grid Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" SharedSizeGroup="Label" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" SharedSizeGroup="Side" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="1" Grid.IsSharedSizeScope="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Button" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Button" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" SharedSizeGroup="Button" />
+                </Grid.ColumnDefinitions>
+                <Button Style="{StaticResource DialogButton}" Margin="0" Content="{l:T adddownload.download_later}" Click="Later_Click" />
+                <Button Grid.Column="2" Style="{StaticResource DialogButton}" Margin="0" Content="{l:T adddownload.start_download}"
+                        IsDefault="True" Click="Start_Click" />
+                <Button Grid.Column="4" Style="{StaticResource DialogButton}" Margin="0" Content="{l:T common.cancel}" IsCancel="True" />
+            </Grid>
+        </Grid>
+    </StackPanel>
+</local:ThemedWindow>

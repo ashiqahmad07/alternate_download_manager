@@ -1,0 +1,249 @@
+<local:ThemedWindow x:Class="ADM.App.GrabberWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="{l:T grabber.title}" Width="980" Height="660" MinWidth="760" MinHeight="520"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="True">
+    <Window.Resources>
+        <Style x:Key="Heading" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,16,0,6" />
+        </Style>
+        <Style x:Key="Hint" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource MutedText}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,4,0,0" />
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Padding" Value="4,3" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="Label" TargetType="TextBlock" BasedOn="{StaticResource FieldLabel}">
+            <Setter Property="Width" Value="170" />
+        </Style>
+        <Style x:Key="ListButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Padding" Value="10,3" />
+            <Setter Property="Margin" Value="0,0,6,6" />
+        </Style>
+    </Window.Resources>
+
+    <DockPanel Margin="18">
+        <TextBlock x:Name="StepText" DockPanel.Dock="Top" FontSize="{DynamicResource AppFontSizeLarge}" FontWeight="SemiBold" Margin="0,0,0,10"
+                   AutomationProperties.LiveSetting="Polite" />
+
+        <DockPanel DockPanel.Dock="Bottom" Margin="0,14,0,0" LastChildFill="True">
+            <Button DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T common.close}" Click="Close_Click" />
+            <Button x:Name="NextButton" DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T grabber.next}" IsDefault="True" Click="Next_Click" />
+            <Button x:Name="BackButton" DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T grabber.back}" Click="Back_Click" />
+            <TextBlock x:Name="ProblemText" Foreground="{DynamicResource ErrorText}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0"
+                       AutomationProperties.LiveSetting="Assertive" />
+        </DockPanel>
+
+        <Grid>
+            <!-- 1. The start page -->
+            <ScrollViewer x:Name="StartPage" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <DockPanel>
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.start_page}" />
+                        <TextBox x:Name="StartBox" AutomationProperties.Name="{l:T grabber.start_page}" />
+                    </DockPanel>
+                    <DockPanel Margin="0,8,0,0">
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.project_name}" />
+                        <TextBox x:Name="NameBox" AutomationProperties.Name="{l:T grabber.project_name}" />
+                    </DockPanel>
+                    <DockPanel Margin="0,8,0,0">
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.template}" />
+                        <Button DockPanel.Dock="Right" Content="{l:T grabber.delete_template}" Padding="10,3" Margin="6,0,0,0" Click="DeleteTemplate_Click" />
+                        <Button DockPanel.Dock="Right" Content="{l:T grabber.save_as_template}" Padding="10,3" Margin="6,0,0,0" Click="SaveTemplate_Click" />
+                        <ComboBox x:Name="TemplateBox" DisplayMemberPath="Name" SelectionChanged="Template_Changed" AutomationProperties.Name="{l:T grabber.template}" />
+                    </DockPanel>
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T grabber.template_hint}" />
+
+                    <TextBlock Style="{StaticResource Heading}" Text="{l:T grabber.login_heading}" />
+                    <DockPanel>
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T common.user_name}" />
+                        <TextBox x:Name="UserBox" AutomationProperties.Name="{l:T common.user_name}" />
+                    </DockPanel>
+                    <DockPanel Margin="0,8,0,0">
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T common.password}" />
+                        <PasswordBox x:Name="PasswordBox" Padding="4,3" AutomationProperties.Name="{l:T common.password}" />
+                    </DockPanel>
+                    <DockPanel Margin="0,8,0,0">
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.cookies}" />
+                        <TextBox x:Name="CookiesBox" AutomationProperties.Name="{l:T grabber.cookies}" />
+                    </DockPanel>
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T grabber.login_hint}" />
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 2. Where to save -->
+            <ScrollViewer x:Name="SavePage" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                <StackPanel>
+                    <RadioButton x:Name="ByCategoryOption" GroupName="Save" Content="{l:T grabber.save_by_category}" />
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <RadioButton x:Name="CategoryFolderOption" GroupName="Save" Content="{l:T grabber.save_in_category}" VerticalAlignment="Center" Width="260" />
+                        <ComboBox x:Name="CategoryBox" Width="200" DisplayMemberPath="Name" AutomationProperties.Name="{l:T main.category}" />
+                    </StackPanel>
+                    <DockPanel Margin="0,8,0,0">
+                        <RadioButton x:Name="FolderOption" GroupName="Save" Content="{l:T grabber.save_in_folder}" VerticalAlignment="Center" Width="260" />
+                        <Button DockPanel.Dock="Right" Content="{l:T common.browse}" Padding="10,3" Margin="6,0,0,0" Click="Browse_Click" />
+                        <TextBox x:Name="FolderBox" AutomationProperties.Name="{l:T grabber.save_in_folder}" GotFocus="Folder_Focused" />
+                    </DockPanel>
+                    <TextBlock Style="{StaticResource Hint}" Margin="26,4,0,0" Text="{l:T grabber.folder_hint}" />
+
+                    <CheckBox x:Name="SubfoldersBox" Margin="0,16,0,0" Content="{l:T grabber.keep_subfolders}" />
+                    <CheckBox x:Name="ConvertBox" Margin="0,8,0,0" Content="{l:T grabber.convert_links}" />
+                    <TextBlock Style="{StaticResource Hint}" Margin="22,4,0,0" Text="{l:T grabber.convert_hint}" />
+                    <CheckBox x:Name="OverwriteBox" Margin="0,8,0,0" Content="{l:T grabber.overwrite}" />
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 3. Which pages to explore -->
+            <ScrollViewer x:Name="ExplorePage" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                <StackPanel>
+                    <RadioButton x:Name="WholeSiteOption" GroupName="Levels" Content="{l:T grabber.whole_site}" />
+                    <RadioButton x:Name="LevelsOption" GroupName="Levels" Margin="0,8,0,0" Content="{l:T grabber.levels}" />
+                    <StackPanel Orientation="Horizontal" Margin="22,8,0,0">
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T grabber.site_levels}" />
+                        <TextBox x:Name="SiteLevelsBox" Width="56" AutomationProperties.Name="{l:T grabber.site_levels}" />
+                        <TextBlock Style="{StaticResource FieldLabel}" Margin="18,0,10,0" Text="{l:T grabber.other_levels}" />
+                        <TextBox x:Name="OtherLevelsBox" Width="56" AutomationProperties.Name="{l:T grabber.other_levels}" />
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource Hint}" Margin="22,4,0,0" Text="{l:T grabber.levels_hint}" />
+
+                    <CheckBox x:Name="NoParentsBox" Margin="0,16,0,0" Content="{l:T grabber.no_parents}" />
+                    <CheckBox x:Name="MainDomainBox" Margin="0,8,0,0" Content="{l:T grabber.main_domain}" />
+
+                    <TextBlock Style="{StaticResource Heading}" Text="{l:T grabber.explore_lists}" />
+                    <DockPanel>
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.explore_only}" />
+                        <TextBox x:Name="ExploreOnlyBox" AutomationProperties.Name="{l:T grabber.explore_only}" />
+                    </DockPanel>
+                    <DockPanel Margin="0,8,0,0">
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.explore_never}" />
+                        <TextBox x:Name="ExploreNeverBox" AutomationProperties.Name="{l:T grabber.explore_never}" />
+                    </DockPanel>
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T grabber.lists_hint}" />
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.explore_at_once}" />
+                        <TextBox x:Name="ExploreAtOnceBox" Width="56" AutomationProperties.Name="{l:T grabber.explore_at_once}" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 4. Which files -->
+            <ScrollViewer x:Name="FilesPage" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                <StackPanel>
+                    <DockPanel>
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.include}" />
+                        <Button DockPanel.Dock="Right" Content="{l:T grabber.filters}" Padding="10,3" Margin="6,0,0,0" Click="Filters_Click" Tag="Include" />
+                        <TextBox x:Name="IncludeBox" AutomationProperties.Name="{l:T grabber.include}" />
+                    </DockPanel>
+                    <DockPanel Margin="0,8,0,0">
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.exclude}" />
+                        <Button DockPanel.Dock="Right" Content="{l:T grabber.filters}" Padding="10,3" Margin="6,0,0,0" Click="Filters_Click" Tag="Exclude" />
+                        <TextBox x:Name="ExcludeBox" AutomationProperties.Name="{l:T grabber.exclude}" />
+                    </DockPanel>
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T grabber.masks_hint}" />
+
+                    <CheckBox x:Name="ThisSiteOnlyBox" Margin="0,14,0,0" Content="{l:T grabber.this_site_only}" />
+                    <CheckBox x:Name="HideCopiesBox" Margin="0,8,0,0" Content="{l:T grabber.hide_copies}" />
+                    <CheckBox x:Name="StartAtOnceBox" Margin="0,8,0,0" Content="{l:T grabber.start_at_once}" />
+                    <CheckBox x:Name="DescriptionBox" Margin="0,8,0,0" Content="{l:T grabber.link_text_as_description}" />
+
+                    <TextBlock Style="{StaticResource Heading}" Text="{l:T grabber.file_lists}" />
+                    <DockPanel>
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.files_only_in}" />
+                        <TextBox x:Name="FilesOnlyInBox" AutomationProperties.Name="{l:T grabber.files_only_in}" />
+                    </DockPanel>
+                    <DockPanel Margin="0,8,0,0">
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.files_never_in}" />
+                        <TextBox x:Name="FilesNeverInBox" AutomationProperties.Name="{l:T grabber.files_never_in}" />
+                    </DockPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.min_size}" />
+                        <TextBox x:Name="MinSizeBox" Width="90" AutomationProperties.Name="{l:T grabber.min_size}" />
+                        <TextBlock Style="{StaticResource FieldLabel}" Margin="18,0,10,0" Text="{l:T grabber.max_size}" />
+                        <TextBox x:Name="MaxSizeBox" Width="90" AutomationProperties.Name="{l:T grabber.max_size}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                        <TextBlock Style="{StaticResource Label}" Text="{l:T grabber.download_at_once}" />
+                        <TextBox x:Name="DownloadAtOnceBox" Width="56" AutomationProperties.Name="{l:T grabber.download_at_once}" />
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 5. The list -->
+            <DockPanel x:Name="ListPage" Visibility="Collapsed">
+                <WrapPanel DockPanel.Dock="Top">
+                    <Button x:Name="ExploreButton" Style="{StaticResource ListButton}" Content="{l:T grabber.explore}" Click="Explore_Click" />
+                    <Button x:Name="DownloadButton" Style="{StaticResource ListButton}" Content="{l:T grabber.download}" Click="Download_Click" />
+                    <Button x:Name="UpdateButton" Style="{StaticResource ListButton}" Content="{l:T grabber.update}" Click="Update_Click" />
+                    <Button x:Name="StopButton" Style="{StaticResource ListButton}" Content="{l:T common.stop}" Click="Stop_Click" />
+                    <Button Style="{StaticResource ListButton}" Content="{l:T links.check_all}" Click="CheckAll_Click" />
+                    <Button Style="{StaticResource ListButton}" Content="{l:T links.uncheck_all}" Click="UncheckAll_Click" />
+                    <Button Style="{StaticResource ListButton}" Content="{l:T grabber.add_to_main_list}" Click="AddToMainList_Click" />
+                    <Button Style="{StaticResource ListButton}" Content="{l:T grabber.statistics}" Click="Statistics_Click" />
+                    <Button Style="{StaticResource ListButton}" Content="{l:T grabber.schedule}" Click="Schedule_Click" />
+                    <Button Style="{StaticResource ListButton}" Content="{l:T grabber.save_project}" Click="Save_Click" />
+                </WrapPanel>
+                <TextBlock x:Name="ListStatus" DockPanel.Dock="Bottom" Margin="0,8,0,0" Foreground="{DynamicResource MutedText}" TextTrimming="CharacterEllipsis"
+                           AutomationProperties.LiveSetting="Polite" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="230" MinWidth="120" />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <TreeView x:Name="Tree" SelectedItemChanged="Tree_SelectedItemChanged" AutomationProperties.Name="{l:T grabber.tree}">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                <TextBlock Text="{Binding Text}" />
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                                <Setter Property="IsExpanded" Value="{Binding Expanded, Mode=TwoWay}" />
+                                <Setter Property="AutomationProperties.Name" Value="{Binding Text}" />
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                    </TreeView>
+                    <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="{DynamicResource BorderBrush}" />
+                    <DataGrid x:Name="Files" Grid.Column="2" AutoGenerateColumns="False" SelectionMode="Extended" CanUserAddRows="False" CanUserDeleteRows="False"
+                              HeadersVisibility="Column" GridLinesVisibility="None" BorderThickness="0" RowHeight="{DynamicResource AppRowHeight}"
+                              EnableRowVirtualization="True" EnableColumnVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling"
+                              MouseDoubleClick="Files_MouseDoubleClick" AutomationProperties.Name="{l:T grabber.files}">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="{l:T common.open}" Click="OpenFile_Click" />
+                                <MenuItem Header="{l:T main.open_folder}" Click="OpenFolder_Click" />
+                                <MenuItem Header="{l:T main.properties}" Click="Properties_Click" />
+                                <Separator />
+                                <MenuItem Header="{l:T grabber.check_selected}" Click="CheckSelected_Click" />
+                                <MenuItem Header="{l:T grabber.uncheck_selected}" Click="UncheckSelected_Click" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Width="34" SortMemberPath="Checked">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding Checked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center" AutomationProperties.Name="{Binding Name}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="{l:T common.name}" Binding="{Binding Name, Mode=OneWay}" Width="180" IsReadOnly="True" />
+                            <DataGridTextColumn Header="{l:T grabber.type}" Binding="{Binding Type, Mode=OneWay}" Width="110" IsReadOnly="True" />
+                            <DataGridTextColumn Header="{l:T common.size}" Binding="{Binding SizeText, Mode=OneWay}" Width="80" IsReadOnly="True" SortMemberPath="Size" />
+                            <DataGridTextColumn Header="{l:T common.status}" Binding="{Binding Status, Mode=OneWay}" Width="110" IsReadOnly="True" />
+                            <DataGridTextColumn Header="{l:T links.link_text}" Binding="{Binding LinkText, Mode=OneWay}" Width="130" IsReadOnly="True" />
+                            <DataGridTextColumn Header="{l:T common.address}" Binding="{Binding Url, Mode=OneWay}" Width="260" IsReadOnly="True" />
+                            <DataGridTextColumn Header="{l:T common.save_to}" Binding="{Binding SaveTo, Mode=OneWay}" Width="220" IsReadOnly="True" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </DockPanel>
+        </Grid>
+    </DockPanel>
+</local:ThemedWindow>

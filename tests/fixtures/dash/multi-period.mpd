@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MPD xmlns="urn:mpeg:dash:schema:mpd:2011" type="static" mediaPresentationDuration="PT10S">
+  <Period id="first" duration="PT4S">
+    <BaseURL>one/</BaseURL>
+    <AdaptationSet mimeType="video/mp4">
+      <SegmentTemplate timescale="1" duration="2" initialization="$Bandwidth$/init.mp4" media="$Bandwidth$/$Number$.m4s" />
+      <Representation id="low" bandwidth="500000" height="360" />
+      <Representation id="high" bandwidth="1500000" height="720" />
+    </AdaptationSet>
+    <AdaptationSet mimeType="audio/mp4">
+      <SegmentTemplate timescale="1" duration="2" initialization="audio/init.mp4" media="audio/$Number$.m4s" />
+      <Representation id="a" bandwidth="128000" />
+    </AdaptationSet>
+  </Period>
+  <Period id="second" start="PT4S">
+    <BaseURL>two/</BaseURL>
+    <AdaptationSet mimeType="video/mp4">
+      <SegmentTemplate timescale="1" duration="2" initialization="$Bandwidth$/init.mp4" media="$Bandwidth$/$Number$.m4s" />
+      <Representation id="low" bandwidth="400000" height="360" />
+      <Representation id="high" bandwidth="1400000" height="720" />
+    </AdaptationSet>
+    <AdaptationSet mimeType="audio/mp4">
+      <SegmentTemplate timescale="1" duration="2" initialization="audio/init.mp4" media="audio/$Number$.m4s" />
+      <Representation id="a" bandwidth="128000" />
+    </AdaptationSet>
+  </Period>
+</MPD>

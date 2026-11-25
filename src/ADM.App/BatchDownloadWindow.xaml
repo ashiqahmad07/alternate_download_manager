@@ -1,0 +1,48 @@
+<local:ThemedWindow x:Class="ADM.App.BatchDownloadWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="{l:T batchdownload.batch_download}" Width="640" Height="540" MinWidth="480" MinHeight="380"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="True">
+    <DockPanel Margin="18">
+        <StackPanel x:Name="PatternPanel" DockPanel.Dock="Top">
+            <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T batchdownload.address_with_one_asterisk_where_number}" />
+            <TextBox x:Name="PatternBox" Padding="4,3" Margin="0,4,0,0" TextChanged="Pattern_Changed" />
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T batchdownload.from}" />
+                <TextBox x:Name="FromBox" Width="70" Padding="4,3" Text="1" TextChanged="Pattern_Changed" />
+                <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T batchdownload.to}" Margin="10,0,10,0" />
+                <TextBox x:Name="ToBox" Width="70" Padding="4,3" Text="10" TextChanged="Pattern_Changed" />
+                <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T batchdownload.digits}" Margin="18,0,10,0" />
+                <TextBox x:Name="WidthBox" Width="50" Padding="4,3" Text="0" TextChanged="Pattern_Changed"
+                         ToolTip="{l:T batchdownload.pads_numbers_with_zeros_3_digits}" />
+            </StackPanel>
+            <TextBlock x:Name="PatternError" Foreground="{DynamicResource ErrorText}" TextWrapping="Wrap" Margin="0,8,0,0" />
+        </StackPanel>
+
+        <DockPanel DockPanel.Dock="Bottom" Margin="0,14,0,0" LastChildFill="False">
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T batchdownload.add_to}" />
+                <ComboBox x:Name="QueueBox" Width="140" DisplayMemberPath="Name" />
+                <CheckBox x:Name="StartQueueBox" Content="{l:T batchdownload.start_queue}" VerticalAlignment="Center" Margin="12,0,0,0" />
+            </StackPanel>
+            <Button DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T common.cancel}" IsCancel="True" />
+            <Button DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T common.add}" IsDefault="True" Click="Add_Click" />
+        </DockPanel>
+
+        <DockPanel DockPanel.Dock="Bottom" Margin="0,8,0,0" LastChildFill="False">
+            <Button DockPanel.Dock="Left" Content="{l:T batchdownload.check_all}" Padding="10,3" Click="CheckAll_Click" />
+            <Button DockPanel.Dock="Left" Content="{l:T batchdownload.uncheck_all}" Padding="10,3" Margin="6,0,0,0" Click="UncheckAll_Click" />
+            <TextBlock x:Name="CountText" DockPanel.Dock="Right" Style="{StaticResource FieldLabel}" Margin="0" />
+        </DockPanel>
+
+        <ListBox x:Name="LinkList" Margin="0,12,0,0">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox IsChecked="{Binding Checked, Mode=TwoWay}" Content="{Binding Url}" Click="Row_Click" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</local:ThemedWindow>

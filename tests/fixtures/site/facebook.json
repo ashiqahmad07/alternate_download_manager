@@ -1,0 +1,10 @@
+{
+  "id": "1",
+  "title": "A Facebook video",
+  "webpage_url": "https://www.facebook.com/watch/?v=1",
+  "formats": [
+    { "format_id": "sd", "url": "https://video.xx.fbcdn.net/v/sd.mp4?oh=1", "protocol": "https", "ext": "mp4", "width": 640, "height": 360, "tbr": 600 },
+    { "format_id": "hd", "url": "https://video.xx.fbcdn.net/v/hd.mp4?oh=2", "protocol": "https", "ext": "mp4", "width": 1280, "height": 720, "tbr": 1500 },
+    { "format_id": "dash-1080", "url": "https://video.xx.fbcdn.net/v/1080.mp4?oh=3", "protocol": "https", "ext": "mp4", "vcodec": "avc1.640028", "acodec": "none", "width": 1920, "height": 1080, "tbr": 3000 }
+  ]
+}

@@ -1,0 +1,143 @@
+<local:ThemedWindow x:Class="ADM.App.SchedulerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="{l:T scheduler.scheduler}" Width="780" Height="600" MinWidth="680" MinHeight="520" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <Style x:Key="Heading" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,18,0,6" />
+        </Style>
+        <Style x:Key="Hint" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource MutedText}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,4,0,0" />
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Padding" Value="4,3" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="SideButton" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Padding" Value="10,4" />
+            <Setter Property="Margin" Value="0,0,0,6" />
+            <Setter Property="MinWidth" Value="80" />
+        </Style>
+    </Window.Resources>
+
+    <DockPanel Margin="16">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button Style="{StaticResource DialogButton}" Content="{l:T scheduler.start_now}" Click="StartNow_Click" />
+            <Button Style="{StaticResource DialogButton}" Content="{l:T common.stop}" Click="Stop_Click" />
+            <Button Style="{StaticResource DialogButton}" Content="{l:T scheduler.apply}" Click="Apply_Click" />
+            <Button Style="{StaticResource DialogButton}" Content="{l:T common.close}" IsCancel="True" />
+        </StackPanel>
+
+        <DockPanel DockPanel.Dock="Left" Width="180" Margin="0,0,16,0">
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,8,0,0">
+                <Button x:Name="NewQueueButton" Content="{l:T scheduler.new_queue}" Padding="8,3" Click="NewQueue_Click" />
+                <Button x:Name="DeleteButton" Content="{l:T common.delete}" Padding="8,3" Margin="6,0,0,0" Click="DeleteQueue_Click" />
+            </StackPanel>
+            <ListBox x:Name="QueueList" DisplayMemberPath="Name" SelectionChanged="QueueList_SelectionChanged"
+                     AutomationProperties.Name="{l:T scheduler.queues}" />
+        </DockPanel>
+
+        <TabControl x:Name="Tabs">
+            <TabItem Header="{l:T scheduler.schedule}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="14">
+                        <DockPanel>
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T common.name}" />
+                            <TextBox x:Name="NameBox" />
+                        </DockPanel>
+
+                        <RadioButton x:Name="DownloadKindBox" GroupName="Kind" Margin="0,14,0,0" Checked="Kind_Changed"
+                                     Content="{l:T scheduler.one_time_download_each_file_leaves}" />
+                        <RadioButton x:Name="SyncKindBox" GroupName="Kind" Margin="0,6,0,0" Checked="Kind_Changed"
+                                     Content="{l:T scheduler.periodic_synchronization_files_stay_and_are}" />
+                        <TextBlock x:Name="KindFixedHint" Style="{StaticResource Hint}" Text="{l:T scheduler.kind_of_two_main_queues_cant}" />
+                        <StackPanel x:Name="RunPanel" Visibility="Collapsed" Margin="0,14,0,0">
+                            <TextBlock Text="{l:T scheduler.project_runs}" />
+                            <RadioButton x:Name="RunExploreBox" GroupName="Run" Margin="0,6,0,0" Checked="Kind_Changed" Content="{l:T scheduler.run_explore}" />
+                            <RadioButton x:Name="RunBothBox" GroupName="Run" Margin="0,6,0,0" Checked="Kind_Changed" Content="{l:T scheduler.run_explore_and_download}" />
+                            <RadioButton x:Name="RunCheckedBox" GroupName="Run" Margin="0,6,0,0" Checked="Kind_Changed" Content="{l:T scheduler.run_download_checked}" />
+                            <RadioButton x:Name="RunSyncBox" GroupName="Run" Margin="0,6,0,0" Checked="Kind_Changed" Content="{l:T scheduler.run_sync}" />
+                            <TextBlock Style="{StaticResource Hint}" Margin="22,4,0,0" Text="{l:T scheduler.run_sync_hint}" />
+                        </StackPanel>
+
+                        <TextBlock Style="{StaticResource Heading}" Text="{l:T scheduler.start}" />
+                        <CheckBox x:Name="StartOnLaunchBox" Content="{l:T scheduler.start_whenever_adm_starts}" />
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <CheckBox x:Name="EnabledBox" VerticalAlignment="Center" Content="{l:T scheduler.start_at}" />
+                            <TextBox x:Name="StartBox" Width="70" Margin="8,0,0,0" AutomationProperties.Name="{l:T scheduler.start_time_as_hours_and_minutes}" />
+                            <TextBlock Style="{StaticResource FieldLabel}" Margin="8,0,0,0" Text="{l:T scheduler.hh_mm}" />
+                        </StackPanel>
+                        <!-- The last words wrap, so a narrow window or a large font doesn't cut them off. -->
+                        <DockPanel x:Name="RepeatPanel" Margin="22,8,0,0">
+                            <TextBlock DockPanel.Dock="Left" VerticalAlignment="Center" Text="{l:T scheduler.then_again_every}" />
+                            <TextBox x:Name="RepeatBox" DockPanel.Dock="Left" Width="56" Margin="8,0,8,0" AutomationProperties.Name="{l:T scheduler.repeat_every_in_minutes}" />
+                            <TextBlock VerticalAlignment="Center" TextWrapping="Wrap" Text="{l:T scheduler.minutes_until_stop_time_or_end}" />
+                        </DockPanel>
+                        <TextBlock Style="{StaticResource Hint}" Margin="22,4,0,0"
+                                   Text="{l:T scheduler.adm_must_be_running_at_that}" />
+
+                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                            <CheckBox x:Name="StopEnabledBox" VerticalAlignment="Center" Content="{l:T scheduler.stop_at}" />
+                            <TextBox x:Name="StopBox" Width="70" Margin="8,0,0,0" AutomationProperties.Name="{l:T scheduler.stop_time_as_hours_and_minutes}" />
+                        </StackPanel>
+                        <TextBlock Style="{StaticResource Hint}" Margin="22,4,0,0" Text="{l:T scheduler.stops_queue_even_when_it_was}" />
+
+                        <TextBlock Style="{StaticResource FieldLabel}" Margin="0,12,0,4" Text="{l:T scheduler.on_these_days}" />
+                        <WrapPanel x:Name="DaysPanel" />
+
+                        <TextBlock Style="{StaticResource Heading}" Text="{l:T scheduler.when_done}" />
+                        <DockPanel>
+                            <CheckBox x:Name="RunFileBox" DockPanel.Dock="Left" VerticalAlignment="Center" Content="{l:T scheduler.open_this_file}" />
+                            <Button DockPanel.Dock="Right" Content="{l:T common.browse}" Padding="8,3" Margin="6,0,0,0" Click="BrowseRunFile_Click" />
+                            <TextBox x:Name="RunFilePathBox" Margin="8,0,0,0" AutomationProperties.Name="{l:T scheduler.file_to_open_when_queue_is}" />
+                        </DockPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T scheduler.then}" />
+                            <ComboBox x:Name="CompletionBox" Width="230" SelectionChanged="CompletionBox_SelectionChanged" AutomationProperties.Name="{l:T scheduler.then}" />
+                        </StackPanel>
+                        <CheckBox x:Name="ForceCloseBox" Margin="0,8,0,0" Content="{l:T scheduler.close_programs_even_if_they_have}" />
+                        <TextBlock Style="{StaticResource Hint}"
+                                   Text="{l:T scheduler.sleep_hibernate_and_shut_down_wait}" />
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="{l:T scheduler.files_in_queue}">
+                <DockPanel Margin="14">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T scheduler.files_at_once}" />
+                        <TextBox x:Name="ConcurrentBox" Width="50" AutomationProperties.Name="{l:T scheduler.files_at_once}" />
+                        <CheckBox x:Name="LimitRetriesBox" Margin="24,0,0,0" VerticalAlignment="Center" Content="{l:T scheduler.retries_for_each_failed_file}" />
+                        <TextBox x:Name="RetriesBox" Width="50" Margin="8,0,0,0" AutomationProperties.Name="{l:T scheduler.retries_for_each_failed_file}" />
+                    </StackPanel>
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Hint}" Margin="0,6,0,10"
+                               Text="{l:T scheduler.failed_file_goes_to_end_of}" />
+
+                    <StackPanel DockPanel.Dock="Right" Margin="10,0,0,0">
+                        <Button Style="{StaticResource SideButton}" Content="{l:T scheduler.top}" Click="MoveTop_Click" />
+                        <Button Style="{StaticResource SideButton}" Content="{l:T scheduler.up}" Click="MoveUp_Click" />
+                        <Button Style="{StaticResource SideButton}" Content="{l:T scheduler.down}" Click="MoveDown_Click" />
+                        <Button Style="{StaticResource SideButton}" Content="{l:T scheduler.bottom}" Click="MoveBottom_Click" />
+                        <Button Style="{StaticResource SideButton}" Content="{l:T scheduler.remove}" Margin="0,12,0,0" Click="RemoveFiles_Click"
+                                ToolTip="{l:T scheduler.take_selected_files_out_of_queue}" />
+                    </StackPanel>
+                    <ListView x:Name="FilesList" SelectionMode="Extended" AutomationProperties.Name="{l:T scheduler.files_in_queue}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="#" Width="34" DisplayMemberBinding="{Binding QueuePosition}" />
+                                <GridViewColumn Header="{l:T common.file_name}" Width="170" DisplayMemberBinding="{Binding}" />
+                                <GridViewColumn Header="{l:T common.size}" Width="66" DisplayMemberBinding="{Binding SizeText}" />
+                                <GridViewColumn Header="{l:T common.status}" Width="130" DisplayMemberBinding="{Binding StatusText}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</local:ThemedWindow>

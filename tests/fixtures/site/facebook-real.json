@@ -1,0 +1,13 @@
+{
+  "id": "2960280377674081",
+  "title": "A Facebook video",
+  "webpage_url": "https://www.facebook.com/watch/?v=2960280377674081",
+  "formats": [
+    { "format_id": "4726632900995605a", "url": "https://video.xx.fbcdn.net/o1/a.mp4?efg=x", "protocol": "https", "ext": "m4a", "vcodec": "none", "acodec": "mp4a.40.5", "tbr": 78.944, "format_note": "DASH audio" },
+    { "format_id": "sd", "url": "https://video.xx.fbcdn.net/o1/sd.mp4?efg=x", "protocol": "https", "ext": "mp4" },
+    { "format_id": "hd", "url": "https://video.xx.fbcdn.net/o1/hd.mp4?efg=x", "protocol": "https", "ext": "mp4" },
+    { "format_id": "4726832057642356v", "url": "https://video.xx.fbcdn.net/o1/v360.mp4?efg=x", "protocol": "https", "ext": "mp4", "vcodec": "av01.0.01M.08.0.111.01.01.01.0", "acodec": "none", "width": 360, "height": 640, "tbr": 165.138 },
+    { "format_id": "4726832037642358v", "url": "https://video.xx.fbcdn.net/o1/v540.mp4?efg=x", "protocol": "https", "ext": "mp4", "vcodec": "av01.0.04M.08.0.111.01.01.01.0", "acodec": "none", "width": 540, "height": 960, "tbr": 301.43 },
+    { "format_id": "4726832047642357v", "url": "https://video.xx.fbcdn.net/o1/v720.mp4?efg=x", "protocol": "https", "ext": "mp4", "vcodec": "av01.0.05M.08.0.111.01.01.01.0", "acodec": "none", "width": 720, "height": 1280, "tbr": 1106.88 }
+  ]
+}

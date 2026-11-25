@@ -1,0 +1,51 @@
+name: Bug report
+description: Something in ADM doesn't work as it should
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: A link that shows it helps most, if it's public.
+      placeholder: |
+        1. Open ...
+        2. Click ...
+        3. ...
+  - type: input
+    id: version
+    attributes:
+      label: ADM version
+      description: From the setup file's name, or Settings > Apps > Installed apps.
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser, if the problem involves one
+      options:
+        - Not browser-related
+        - Chrome
+        - Edge
+        - Firefox
+        - Other
+  - type: textarea
+    id: log
+    attributes:
+      label: Log
+      description: >
+        Attach or paste `logs\adm.log` (Options > General > Open log folder). It holds no file names,
+        cookies or logins.
+      render: text

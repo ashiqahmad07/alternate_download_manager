@@ -1,0 +1,67 @@
+<local:ThemedWindow x:Class="ADM.App.LinksWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="{l:T links.download_all_links}" Width="760" Height="600" MinWidth="560" MinHeight="420"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="True">
+    <DockPanel Margin="18">
+        <TextBlock x:Name="PageText" DockPanel.Dock="Top" Foreground="{DynamicResource MutedText}" TextTrimming="CharacterEllipsis" />
+
+        <DockPanel DockPanel.Dock="Top" Margin="0,10,0,0" LastChildFill="False">
+            <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T links.file_types}" />
+            <TextBox x:Name="TypesBox" Width="260" Padding="4,3" TextChanged="Filter_Changed"
+                     ToolTip="{l:T links.space_separated_types_such_as_zip}" />
+            <CheckBox x:Name="HideImagesBox" Content="{l:T links.hide_images_on_this_page}" VerticalAlignment="Center" Margin="16,0,0,0"
+                      Checked="Filter_Changed" Unchecked="Filter_Changed" />
+        </DockPanel>
+
+        <DockPanel DockPanel.Dock="Bottom" Margin="0,14,0,0" LastChildFill="False">
+            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T links.add_to}" />
+                <ComboBox x:Name="QueueBox" Width="140" DisplayMemberPath="Name" />
+                <CheckBox x:Name="StartQueueBox" Content="{l:T links.start_queue}" VerticalAlignment="Center" Margin="12,0,0,0" />
+            </StackPanel>
+            <Button DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T common.cancel}" IsCancel="True" />
+            <Button DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T common.add}" IsDefault="True" Click="Add_Click" />
+        </DockPanel>
+
+        <GroupBox DockPanel.Dock="Bottom" Header="{l:T common.save_to}" Margin="0,12,0,0" Padding="8">
+            <StackPanel>
+                <RadioButton x:Name="ByCategoryOption" Content="{l:T links.each_file_to_folder_of_its}" IsChecked="True" />
+                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                    <RadioButton x:Name="OneCategoryOption" Content="{l:T links.all_files_to_one_category}" VerticalAlignment="Center" Width="190" />
+                    <ComboBox x:Name="CategoryBox" Width="180" DisplayMemberPath="Name" DropDownOpened="Category_Opened" />
+                </StackPanel>
+                <DockPanel Margin="0,8,0,0">
+                    <RadioButton x:Name="OneFolderOption" Content="{l:T links.all_files_to_one_folder}" VerticalAlignment="Center" Width="190" />
+                    <Button DockPanel.Dock="Right" Content="{l:T common.browse}" Padding="10,3" Margin="6,0,0,0" Click="Browse_Click" />
+                    <TextBox x:Name="FolderBox" Padding="4,3" GotFocus="Folder_Focused" />
+                </DockPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <DockPanel DockPanel.Dock="Bottom" Margin="0,8,0,0" LastChildFill="False">
+            <Button DockPanel.Dock="Left" Content="{l:T links.check_all}" Padding="10,3" Click="CheckAll_Click" />
+            <Button DockPanel.Dock="Left" Content="{l:T links.uncheck_all}" Padding="10,3" Margin="6,0,0,0" Click="UncheckAll_Click" />
+            <TextBlock x:Name="CountText" DockPanel.Dock="Right" Style="{StaticResource FieldLabel}" Margin="0" />
+        </DockPanel>
+
+        <ListView x:Name="LinkList" Margin="0,12,0,0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="34">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding Checked, Mode=TwoWay}" AutomationProperties.Name="{Binding Name}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="{l:T common.name}" Width="180" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="{l:T links.link_text}" Width="160" DisplayMemberBinding="{Binding Text}" />
+                    <GridViewColumn Header="{l:T common.address}" Width="300" DisplayMemberBinding="{Binding Url}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</local:ThemedWindow>

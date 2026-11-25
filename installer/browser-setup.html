@@ -1,0 +1,253 @@
+<!doctype html>
+<!-- Installed beside ADM.exe as "Browser setup.html" by scripts\publish.ps1, and opened at the end of setup. It works out
+     the extension's folder from its own address, so it is right wherever ADM is installed, dist included. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add ADM to your browser</title>
+<link rel="icon" href="extension/icon32.png">
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f7f9;
+    --card: #ffffff;
+    --text: #1b1f24;
+    --muted: #57606a;
+    --line: #d8dee4;
+    --accent: #0b63ce;
+    --accent-text: #ffffff;
+    --code-bg: #eef1f4;
+    --note-bg: #fff8e1;
+    --note-line: #e7c35a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181c;
+      --card: #1f2227;
+      --text: #e6e8eb;
+      --muted: #a2a9b1;
+      --line: #353a41;
+      --accent: #4c9bff;
+      --accent-text: #0b1220;
+      --code-bg: #2a2e35;
+      --note-bg: #2e2914;
+      --note-line: #8a7425;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.55 "Segoe UI", system-ui, sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 48px; }
+  header { display: flex; gap: 14px; align-items: center; margin-bottom: 8px; }
+  header img { width: 48px; height: 48px; }
+  h1 { font-size: 26px; line-height: 1.2; margin: 0; }
+  .lead { color: var(--muted); margin: 8px 0 24px; }
+  [role="tablist"] { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: -1px; }
+  [role="tab"] {
+    font: inherit;
+    padding: 8px 18px;
+    border: 1px solid var(--line);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  [role="tab"][aria-selected="true"] { background: var(--card); color: var(--text); font-weight: 600; }
+  [role="tabpanel"] {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 0 8px 8px 8px;
+    padding: 8px 24px 20px;
+  }
+  ol { padding-left: 22px; margin: 16px 0 0; }
+  li { margin-bottom: 18px; }
+  li::marker { font-weight: 600; }
+  .copy-row { display: flex; gap: 8px; align-items: stretch; margin-top: 8px; }
+  code {
+    font: 14px/1.4 Consolas, "Cascadia Mono", monospace;
+    background: var(--code-bg);
+    border-radius: 6px;
+  }
+  .copy-row code {
+    flex: 1;
+    min-width: 0;
+    padding: 9px 12px;
+    overflow-wrap: anywhere;
+    user-select: all;
+  }
+  button.copy {
+    font: inherit;
+    font-weight: 600;
+    min-width: 92px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent);
+    color: var(--accent-text);
+    cursor: pointer;
+  }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .note {
+    background: var(--note-bg);
+    border-left: 3px solid var(--note-line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-top: 8px;
+  }
+  .note p { margin: 0; }
+  .note p + p { margin-top: 6px; }
+  footer { color: var(--muted); font-size: 13px; margin-top: 20px; overflow-wrap: anywhere; }
+  @media (max-width: 480px) {
+    [role="tabpanel"] { padding: 4px 14px 14px; }
+    .copy-row { flex-direction: column; }
+    button.copy { padding: 8px 16px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img src="extension/icon48.png" alt="">
+    <h1>Add ADM to your browser</h1>
+  </header>
+  <p class="lead">ADM catches downloads and videos through a small browser extension that comes with it. Until the
+    extension is in the browsers' stores, it is added by hand, once. It takes about a minute.</p>
+
+  <div role="tablist" aria-label="Browser">
+    <button role="tab" id="tab-chrome" aria-controls="chrome" aria-selected="true">Chrome</button>
+    <button role="tab" id="tab-edge" aria-controls="edge" aria-selected="false">Edge</button>
+    <button role="tab" id="tab-firefox" aria-controls="firefox" aria-selected="false">Firefox</button>
+  </div>
+
+  <section role="tabpanel" id="chrome" aria-labelledby="tab-chrome">
+    <ol>
+      <li>Copy this, paste it into Chrome's address bar, and press Enter. (Browsers don't let a page open it for you.)
+        <div class="copy-row"><code>chrome://extensions</code><button class="copy">Copy</button></div></li>
+      <li>Turn on <strong>Developer mode</strong>, at the top right.</li>
+      <li>Click <strong>Load unpacked</strong>. In the window that opens, paste this folder into the <strong>Folder</strong>
+        box at the bottom, then click <strong>Select Folder</strong>.
+        <div class="copy-row"><code data-path="extension"></code><button class="copy">Copy</button></div></li>
+      <li>ADM's icon is under the puzzle piece at the right of the toolbar. Click the pin beside it to keep it in view.</li>
+    </ol>
+    <div class="note">
+      <p>After updating ADM, open <code>chrome://extensions</code> again and click ADM's reload button (&#x21bb;).</p>
+      <p>If Chrome ever offers to turn off developer-mode extensions, keep ADM's on, or downloads go back to the browser.</p>
+    </div>
+  </section>
+
+  <section role="tabpanel" id="edge" aria-labelledby="tab-edge" hidden>
+    <ol>
+      <li>Copy this, paste it into Edge's address bar, and press Enter. (Browsers don't let a page open it for you.)
+        <div class="copy-row"><code>edge://extensions</code><button class="copy">Copy</button></div></li>
+      <li>Turn on <strong>Developer mode</strong>, in the list on the left (on a narrow window, open it with &#x2630;).</li>
+      <li>Click <strong>Load unpacked</strong>. In the window that opens, paste this folder into the <strong>Folder</strong>
+        box at the bottom, then click <strong>Select Folder</strong>.
+        <div class="copy-row"><code data-path="extension"></code><button class="copy">Copy</button></div></li>
+      <li>To keep ADM's icon in view, click the Extensions button (the puzzle piece) in the toolbar, then the eye beside ADM.</li>
+    </ol>
+    <div class="note">
+      <p>After updating ADM, open <code>edge://extensions</code> again and click ADM's <strong>Reload</strong>.</p>
+      <p>If Edge, when it starts, offers to turn off extensions in developer mode, keep ADM's on, or downloads go back
+        to the browser.</p>
+    </div>
+  </section>
+
+  <section role="tabpanel" id="firefox" aria-labelledby="tab-firefox" hidden>
+    <ol>
+      <li>Copy this, paste it into Firefox's address bar, and press Enter. (Browsers don't let a page open it for you.)
+        <div class="copy-row"><code>about:debugging#/runtime/this-firefox</code><button class="copy">Copy</button></div></li>
+      <li>Click <strong>Load Temporary Add-on&hellip;</strong>. In the window that opens, paste this into the
+        <strong>File name</strong> box, then click <strong>Open</strong>.
+        <div class="copy-row"><code data-path="extension-firefox\manifest.json"></code><button class="copy">Copy</button></div></li>
+    </ol>
+    <div class="note">
+      <p>Firefox removes an add-on loaded this way when it closes, so do this again after each restart of Firefox, until
+        ADM is in Firefox's add-on store. Firefox 128 or later is needed.</p>
+    </div>
+  </section>
+
+  <footer>This page is in ADM's folder as <span id="self">Browser setup.html</span>, and in the Start menu as
+    <strong>Add ADM to your browser</strong>.</footer>
+</main>
+<script>
+  // ADM's folder: where this page was opened from. A page opened some other way names the default install folder.
+  function admFolder() {
+    if (location.protocol !== "file:") return "%LOCALAPPDATA%\\Programs\\ADM";
+    var path = decodeURIComponent(location.pathname);
+    path = location.host ? "//" + location.host + path : path.replace(/^\/([A-Za-z]:)/, "$1");
+    path = path.replace(/\//g, "\\");
+    return path.slice(0, path.lastIndexOf("\\"));
+  }
+
+  var folder = admFolder();
+  document.querySelectorAll("[data-path]").forEach(function (code) {
+    code.textContent = folder + "\\" + code.getAttribute("data-path");
+  });
+  if (location.protocol === "file:") document.getElementById("self").textContent = folder + "\\Browser setup.html";
+
+  function copied(button, ok) {
+    button.textContent = ok ? "Copied" : "Select it, then Ctrl+C";
+    clearTimeout(button.timer);
+    button.timer = setTimeout(function () { button.textContent = "Copy"; }, 2500);
+  }
+
+  // The clipboard API where the browser allows it on a file, else the older way.
+  function copy(text, button) {
+    function fallback() {
+      var area = document.createElement("textarea");
+      area.value = text;
+      area.setAttribute("readonly", "");
+      area.style.position = "fixed";
+      area.style.opacity = "0";
+      document.body.appendChild(area);
+      area.select();
+      var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      area.remove();
+      copied(button, ok);
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { copied(button, true); }, fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  document.querySelectorAll("button.copy").forEach(function (button) {
+    button.addEventListener("click", function () {
+      copy(button.previousElementSibling.textContent, button);
+    });
+  });
+
+  var tabs = Array.prototype.slice.call(document.querySelectorAll("[role=tab]"));
+  function show(id) {
+    tabs.forEach(function (tab) {
+      var on = tab.getAttribute("aria-controls") === id;
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+      tab.tabIndex = on ? 0 : -1;
+      document.getElementById(tab.getAttribute("aria-controls")).hidden = !on;
+    });
+  }
+  tabs.forEach(function (tab, i) {
+    tab.addEventListener("click", function () { show(tab.getAttribute("aria-controls")); });
+    tab.addEventListener("keydown", function (e) {
+      var step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (!step) return;
+      var next = tabs[(i + step + tabs.length) % tabs.length];
+      show(next.getAttribute("aria-controls"));
+      next.focus();
+    });
+  });
+
+  // The browser this page opened in comes first.
+  var agent = navigator.userAgent;
+  show(/Edg\//.test(agent) ? "edge" : /Firefox\//.test(agent) ? "firefox" : "chrome");
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<Application x:Class="ADM.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
+             ShutdownMode="OnExplicitShutdown">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- The palette comes first, and Theme.cs replaces it. -->
+                <ResourceDictionary Source="Themes/Light.xaml" />
+                <ResourceDictionary Source="Themes/Controls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Theme.ApplyFont sets these from the settings. -->
+            <FontFamily x:Key="AppFontFamily">Segoe UI</FontFamily>
+            <sys:Double x:Key="AppFontSize">13</sys:Double>
+            <sys:Double x:Key="AppFontSizeSmall">11</sys:Double>
+            <sys:Double x:Key="AppFontSizeLarge">14</sys:Double>
+            <sys:Double x:Key="AppFontSizeTitle">16</sys:Double>
+            <sys:Double x:Key="AppRowHeight">26</sys:Double>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,376 @@
+<local:ThemedWindow x:Class="ADM.App.OptionsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="{l:T options.options}" Width="720" Height="580" MinWidth="560" MinHeight="460" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <Style x:Key="Heading" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,16,0,2" />
+        </Style>
+        <Style x:Key="Hint" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource MutedText}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,0,0,6" />
+        </Style>
+        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Padding" Value="4,3" />
+        </Style>
+    </Window.Resources>
+
+    <DockPanel Margin="16">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button Style="{StaticResource DialogButton}" Content="{l:T common.ok}" IsDefault="True" Click="Ok_Click" />
+            <Button Style="{StaticResource DialogButton}" Content="{l:T common.cancel}" IsCancel="True" />
+        </StackPanel>
+
+        <TabControl x:Name="Tabs">
+            <TabItem Header="{l:T options.general}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14">
+                    <CheckBox x:Name="StartupBox" Content="{l:T options.launch_adm_in_tray_when_windows}" />
+                    <Button HorizontalAlignment="Left" Margin="0,10,0,0" Padding="10,4" Content="{l:T options.open_log_folder}" Click="OpenLogFolder_Click" />
+                    <CheckBox x:Name="ClipboardBox" Margin="0,10,0,0" Content="{l:T options.offer_to_download_file_links_copied}" />
+
+                    <TextBlock Style="{StaticResource Heading}" Text="{l:T options.user_agent_for_downloads_you_add}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T options.downloads_taken_over_from_browser_keep}" />
+                    <TextBox x:Name="UserAgentBox" />
+
+                    <TextBlock Style="{StaticResource Heading}" Text="{l:T options.browser}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T options.keys_are_ctrl_alt_shift_and}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="140" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T options.hold_these_keys_when_clicking_link}" />
+                        <TextBox x:Name="PreventKeysBox" Grid.Column="1" />
+                        <TextBlock Style="{StaticResource FieldLabel}" Grid.Row="1" Margin="0,6,10,0" Text="{l:T options.hold_these_keys_when_clicking_link_2}" />
+                        <TextBox x:Name="ForceKeysBox" Grid.Row="1" Grid.Column="1" Margin="0,6,0,0" />
+                    </Grid>
+                    <CheckBox x:Name="ForceOnClickBox" Margin="0,8,0,0"
+                              Content="{l:T options.click_with_these_keys_held_sends}" />
+                    <CheckBox x:Name="TwoCancelsBox" Margin="0,8,0,0"
+                              Content="{l:T options.when_i_cancel_same_download_from}" />
+
+                    <TextBlock Style="{StaticResource FieldLabel}" Margin="0,12,0,4" Text="{l:T options.show_in_browsers_right_click_menu}" />
+                    <CheckBox x:Name="MenuLinkBox" Content="{l:T options.download_with_adm}" Margin="12,0,0,0" />
+                    <CheckBox x:Name="MenuAllLinksBox" Content="{l:T options.download_all_links_with_adm}" Margin="12,6,0,0" />
+                </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="{l:T options.file_types}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14">
+                    <TextBlock Style="{StaticResource Heading}" Margin="0,0,0,2" Text="{l:T options.take_over_browser_downloads_of_these}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T options.separate_types_with_spaces_matches_anything}" />
+                    <TextBox x:Name="CaptureTypesBox" Height="76" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+                    <Button Content="{l:T options.restore_defaults}" HorizontalAlignment="Left" Padding="10,3" Margin="0,6,0,0" Click="DefaultTypes_Click" />
+
+                    <TextBlock Style="{StaticResource Heading}" Text="{l:T options.never_take_over_downloads_from_these}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T options.separate_sites_with_spaces_for_example}" />
+                    <TextBox x:Name="ExceptionSitesBox" Height="46" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+
+                    <TextBlock Style="{StaticResource Heading}" Text="{l:T options.never_take_over_downloads_from_these_2}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T options.full_addresses_with_wildcards_for_example}" />
+                    <TextBox x:Name="ExceptionAddressesBox" Height="46" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T options.let_browser_keep_files_smaller_than}" />
+                        <TextBox x:Name="MinSizeBox" Width="80" />
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource Hint}" Margin="0,12,0,0"
+                               Text="{l:T options.browser_extension_picks_up_changes_within}" />
+                </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Tag="Connection" Header="{l:T options.connection}">
+                <DockPanel Margin="14">
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T options.connection_type}" />
+                        <ComboBox x:Name="ConnectionTypeBox" Grid.Column="1" Width="180" HorizontalAlignment="Left" AutomationProperties.Name="{l:T options.connection_type}" />
+                        <TextBlock Grid.Row="1" Style="{StaticResource FieldLabel}" Text="{l:T options.connections_per_download_1_to_32}" Margin="0,10,10,0" />
+                        <TextBox x:Name="ConnectionsBox" Grid.Row="1" Grid.Column="1" Width="60" HorizontalAlignment="Left" Margin="0,10,0,0" />
+                        <TextBlock Grid.Row="2" Style="{StaticResource FieldLabel}" Text="{l:T options.speed_limit_for_all_downloads_kb}" Margin="0,10,10,0" />
+                        <TextBox x:Name="SpeedBox" Grid.Row="2" Grid.Column="1" Width="90" HorizontalAlignment="Left" Margin="0,10,0,0" />
+                        <TextBlock Grid.Row="3" Style="{StaticResource FieldLabel}" Text="{l:T options.keep_reconnecting_for_minutes_0_until}" Margin="0,10,10,0" />
+                        <TextBox x:Name="ReconnectBox" Grid.Row="3" Grid.Column="1" Width="60" HorizontalAlignment="Left" Margin="0,10,0,0" />
+                    </Grid>
+                    <CheckBox x:Name="LimiterAtStartupBox" DockPanel.Dock="Top" Margin="0,10,0,0"
+                              Content="{l:T options.turn_speed_limiter_on_whenever_adm}" />
+
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Heading}" Margin="0,20,0,2" Text="{l:T options.download_limits}" />
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+                        <CheckBox x:Name="QuotaBox" VerticalAlignment="Center" Content="{l:T options.download_no_more_than}" />
+                        <TextBox x:Name="QuotaMBBox" Width="70" Margin="8,0,6,0" AutomationProperties.Name="{l:T options.megabytes_per_period}" />
+                        <TextBlock VerticalAlignment="Center" Text="{l:T options.mb_every}" />
+                        <TextBox x:Name="QuotaHoursBox" Width="40" Margin="6,0,6,0" AutomationProperties.Name="{l:T options.hours_per_period}" />
+                        <TextBlock VerticalAlignment="Center" Text="{l:T options.hours}" />
+                    </StackPanel>
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Hint}" Margin="0,6,0,0"
+                               Text="{l:T options.for_connections_with_data_allowance_when}" />
+
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Heading}" Margin="0,20,0,2" Text="{l:T options.connection_limits_for_particular_servers}" />
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Hint}"
+                               Text="{l:T options.some_servers_refuse_several_connections_from}" />
+                    <DataGrid x:Name="ServerLimitGrid" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True"
+                              HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn EditingElementStyle="{StaticResource GridEditBox}" Header="{l:T options.sites}" Binding="{Binding Sites}" Width="*" />
+                            <DataGridTextColumn EditingElementStyle="{StaticResource GridEditBox}" Header="{l:T common.connections}" Binding="{Binding Connections}" Width="100" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="{l:T options.proxy}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14">
+                    <RadioButton x:Name="ProxySystemBox" GroupName="ProxyMode" Content="{l:T options.use_windows_proxy_settings}" />
+                    <RadioButton x:Name="ProxyNoneBox" GroupName="ProxyMode" Margin="0,8,0,0" Content="{l:T options.connect_directly_without_proxy}" />
+                    <RadioButton x:Name="ProxyDetectBox" GroupName="ProxyMode" Margin="0,8,0,0" Content="{l:T options.detect_networks_proxy_automatically}" />
+                    <RadioButton x:Name="ProxyScriptBox" GroupName="ProxyMode" Margin="0,8,0,0" Content="{l:T options.use_this_proxy_script}" />
+                    <TextBox x:Name="ProxyScriptUrlBox" Margin="22,6,0,0" AutomationProperties.Name="{l:T options.proxy_script_address}"
+                             IsEnabled="{Binding IsChecked, ElementName=ProxyScriptBox}" />
+                    <RadioButton x:Name="ProxyManualBox" GroupName="ProxyMode" Margin="0,8,0,0" Content="{l:T options.use_this_proxy_server}" />
+
+                    <StackPanel Margin="22,10,0,0" IsEnabled="{Binding IsChecked, ElementName=ProxyManualBox}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T options.type}" />
+                            <ComboBox x:Name="ProxyKindBox" Grid.Column="1" Width="120" HorizontalAlignment="Left">
+                                <!-- Order matches ProxyKind: Http, Socks5, Https, Socks4. -->
+                                <ComboBoxItem Content="{l:T options.http}" />
+                                <ComboBoxItem Content="{l:T options.socks5}" />
+                                <ComboBoxItem Content="{l:T options.https}" />
+                                <ComboBoxItem Content="{l:T options.socks4}" />
+                            </ComboBox>
+
+                            <TextBlock Grid.Row="1" Style="{StaticResource FieldLabel}" Margin="0,10,10,0" Text="{l:T common.address}" />
+                            <TextBox x:Name="ProxyHostBox" Grid.Row="1" Grid.Column="1" Margin="0,10,0,0" />
+                            <TextBlock Grid.Row="1" Grid.Column="2" Style="{StaticResource FieldLabel}" Margin="12,10,10,0" Text="{l:T options.port}" />
+                            <TextBox x:Name="ProxyPortBox" Grid.Row="1" Grid.Column="3" Width="70" Margin="0,10,0,0" />
+
+                            <TextBlock Grid.Row="2" Style="{StaticResource FieldLabel}" Margin="0,10,10,0" Text="{l:T common.user_name}" />
+                            <TextBox x:Name="ProxyUserBox" Grid.Row="2" Grid.Column="1" Margin="0,10,0,0" />
+
+                            <TextBlock Grid.Row="3" Style="{StaticResource FieldLabel}" Margin="0,10,10,0" Text="{l:T common.password}" />
+                            <PasswordBox x:Name="ProxyPasswordBox" Grid.Row="3" Grid.Column="1" Padding="4,3" Margin="0,10,0,0" />
+                        </Grid>
+                        <TextBlock Style="{StaticResource Hint}" Margin="0,6,0,0" Text="{l:T options.leave_user_name_empty_if_proxy}" />
+
+                        <TextBlock Style="{StaticResource Heading}" Text="{l:T options.reach_these_sites_directly_without_proxy}" />
+                        <TextBlock Style="{StaticResource Hint}" Text="{l:T options.separate_sites_with_spaces_wildcards_work}" />
+                        <TextBox x:Name="ProxyBypassBox" Height="46" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+                    </StackPanel>
+
+                    <CheckBox x:Name="BrowserProxyBox" Margin="0,14,0,0" Content="{l:T options.use_browsers_proxy_when_download_taken}" />
+
+                    <TextBlock Style="{StaticResource Hint}" Margin="0,14,0,0" Text="{l:T options.downloads_already_running_keep_their_connection}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T options.ftp_doesnt_use_windows_proxy_settings}" />
+                </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="{l:T options.site_logins}">
+                <DockPanel Margin="14">
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Hint}"
+                               Text="{l:T options.when_server_asks_for_login_adm}" />
+                    <DataGrid x:Name="SiteLoginGrid" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True"
+                              HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn EditingElementStyle="{StaticResource GridEditBox}" Header="{l:T options.sites}" Binding="{Binding Sites}" Width="*" />
+                            <DataGridTextColumn EditingElementStyle="{StaticResource GridEditBox}" Header="{l:T common.user_name}" Binding="{Binding UserName}" Width="150" />
+                            <DataGridTemplateColumn Header="{l:T common.password}" Width="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Masked}" Margin="2,0" VerticalAlignment="Center" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <PasswordBox Loaded="SiteLoginPassword_Loaded" PasswordChanged="SiteLoginPassword_Changed" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="{l:T common.save_to}">
+                <DockPanel Margin="14">
+                    <Grid DockPanel.Dock="Top">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T options.download_folder}" />
+                        <TextBox x:Name="RootBox" Grid.Column="1" AutomationProperties.Name="{l:T options.download_folder}" />
+                        <Button Grid.Column="2" Content="{l:T common.browse}" Padding="10,3" Margin="6,0,0,0" Click="Browse_Click"
+                                AutomationProperties.Name="{l:T options.browse_for_download_folder}" />
+                        <TextBlock Grid.Row="1" Style="{StaticResource FieldLabel}" Margin="0,10,10,0" Text="{l:T options.temporary_folder}" />
+                        <TextBox x:Name="TempFolderBox" Grid.Row="1" Grid.Column="1" Margin="0,10,0,0" AutomationProperties.Name="{l:T options.temporary_folder}" />
+                        <Button Grid.Row="1" Grid.Column="2" Content="{l:T common.browse}" Padding="10,3" Margin="6,10,0,0" Click="BrowseTemp_Click"
+                                AutomationProperties.Name="{l:T options.browse_for_temporary_folder}" />
+                    </Grid>
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Hint}" Margin="0,6,0,0"
+                               Text="{l:T options.part_files_wait_here_until_download}" />
+
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Heading}" Margin="0,20,0,2" Text="{l:T options.categories}" />
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Hint}"
+                               Text="{l:T options.files_are_sorted_by_extension_relative}" />
+                    <DataGrid x:Name="CategoryGrid" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True"
+                              HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn EditingElementStyle="{StaticResource GridEditBox}" Header="{l:T common.name}" Binding="{Binding Name}" Width="110" />
+                            <DataGridTextColumn EditingElementStyle="{StaticResource GridEditBox}" Header="{l:T options.extensions_space_separated}" Binding="{Binding Extensions}" Width="*" />
+                            <DataGridTextColumn EditingElementStyle="{StaticResource GridEditBox}" Header="{l:T options.folder}" Binding="{Binding Folder}" Width="140" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </DockPanel>
+            </TabItem>
+
+            <TabItem Header="{l:T options.video}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14">
+                    <TextBlock Style="{StaticResource Heading}" Margin="0,0,0,2" Text="{l:T options.download_panel_over_web_players}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T options.browser_extension_shows_it_on_player}" />
+                    <RadioButton x:Name="PanelFullOption" Content="{l:T options.show_full_panel}" />
+                    <RadioButton x:Name="PanelMiniOption" Content="{l:T options.show_small_icon}" Margin="0,6,0,0" />
+                    <RadioButton x:Name="PanelOffOption" Content="{l:T options.dont_show_panel}" Margin="0,6,0,0" />
+
+                    <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T options.skip_media_files_smaller_than_kb}" />
+                        <TextBox x:Name="PanelMinSizeBox" Width="80" />
+                    </StackPanel>
+                    <TextBlock Style="{StaticResource Hint}" Margin="0,4,0,0" Text="{l:T options.streams_hls_always_get_panel}" />
+
+                    <TextBlock Style="{StaticResource Heading}" Text="{l:T options.never_show_panel_on_these_sites}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T options.separate_sites_with_spaces_for_example_2}" />
+                    <TextBox x:Name="PanelExceptionsBox" Height="46" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" />
+
+                    <CheckBox x:Name="SubtitlesBox" Margin="0,14,0,0" Content="{l:T options.save_streams_subtitles_next_to_video}" />
+
+                    <TextBlock Style="{StaticResource Heading}" Text="{l:T options.video_tools}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T options.video_tools_hint}" />
+                    <TextBlock x:Name="VideoToolsText" Margin="0,6,0,0" TextWrapping="Wrap" />
+                    <Button HorizontalAlignment="Left" Margin="0,10,0,0" Padding="10,4" Content="{l:T options.video_tools_button}" Click="VideoTools_Click" />
+                </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="{l:T options.downloads}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="14">
+                    <TextBlock Style="{StaticResource Heading}" Margin="0,0,0,6" Text="{l:T options.when_link_that_is_already_in}" />
+                    <ComboBox x:Name="DuplicateBox" Width="460" HorizontalAlignment="Left">
+                        <!-- Order matches DuplicateAction: Ask, AddNumbered, Overwrite, Resume. -->
+                        <ComboBoxItem Content="{l:T options.ask_what_to_do}" />
+                        <ComboBoxItem Content="{l:T options.add_it_again_with_numbered_file}" />
+                        <ComboBoxItem Content="{l:T options.add_it_again_and_overwrite_existing}" />
+                        <ComboBoxItem Content="{l:T options.keep_existing_download_resume_it_or}" />
+                    </ComboBox>
+
+                    <TextBlock Style="{StaticResource Heading}" Margin="0,20,0,6" Text="{l:T options.deleting_downloads}" />
+                    <CheckBox x:Name="ConfirmFinishedBox" Content="{l:T options.ask_before_removing_finished_downloads_from}" />
+                    <CheckBox x:Name="ConfirmUnfinishedBox" Margin="0,6,0,0" Content="{l:T options.ask_before_deleting_unfinished_downloads_whose}" />
+
+                    <TextBlock Style="{StaticResource Heading}" Margin="0,20,0,6" Text="{l:T options.when_download_finishes}" />
+                    <CheckBox x:Name="ShowCompleteBox" Content="{l:T options.show_download_complete_dialog_not_for}" />
+                    <CheckBox x:Name="MarkDownloadsBox" Margin="0,6,0,0" Content="{l:T options.mark_downloaded_files_as_coming_from}" />
+
+                    <TextBlock Style="{StaticResource Heading}" Margin="0,20,0,6" Text="{l:T options.resuming_download}" />
+                    <CheckBox x:Name="IgnoreModifiedBox" Content="{l:T options.ignore_changes_to_files_modification_time}" />
+
+                    <TextBlock Style="{StaticResource Heading}" Margin="0,20,0,2" Text="{l:T options.virus_checking}" />
+                    <TextBlock Style="{StaticResource Hint}" Text="{l:T options.this_program_checks_each_finished_file}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T options.scanner}" />
+                        <TextBox x:Name="VirusScannerBox" Grid.Column="1" AutomationProperties.Name="{l:T options.virus_scanner}" />
+                        <Button Grid.Column="2" Content="{l:T common.browse}" Padding="10,3" Margin="6,0,0,0" Click="BrowseScanner_Click"
+                                AutomationProperties.Name="{l:T options.browse_for_virus_scanner}" />
+                        <TextBlock Grid.Row="1" Style="{StaticResource FieldLabel}" Margin="0,8,10,0" Text="{l:T options.arguments}" />
+                        <TextBox x:Name="VirusArgumentsBox" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,8,0,0" AutomationProperties.Name="{l:T options.virus_scanner_arguments}" />
+                    </Grid>
+                    <TextBlock x:Name="ScannerArgumentsNote" Style="{StaticResource Hint}" Margin="0,6,0,0" />
+
+                    <TextBlock Style="{StaticResource Heading}" Margin="0,20,0,6" Text="{l:T options.download_progress_window}" />
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="{l:T options.how_it_opens_and_which_tabs}" />
+                        <Button Content="{l:T options.edit}" Padding="10,3" Margin="10,0,0,0" Click="EditProgressWindow_Click"
+                                AutomationProperties.Name="{l:T options.edit_download_progress_window}" />
+                    </StackPanel>
+                </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="{l:T options.sounds}">
+                <DockPanel Margin="14">
+                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource Hint}" Margin="0,0,0,10"
+                               Text="{l:T options.tick_event_to_play_its_sound}" />
+                    <ItemsControl x:Name="SoundList" Grid.IsSharedSizeScope="True" Focusable="False">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" SharedSizeGroup="SoundEvent" />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <CheckBox IsChecked="{Binding On}" Content="{Binding Label}" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                    <TextBox Grid.Column="1" Text="{Binding File, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="{Binding FileLabel}" />
+                                    <Button Grid.Column="2" Content="{l:T common.browse}" Padding="10,3" Margin="6,0,0,0" Click="SoundBrowse_Click" AutomationProperties.Name="{Binding BrowseLabel}" />
+                                    <Button Grid.Column="3" Content="{l:T options.play}" Padding="10,3" Margin="6,0,0,0" Click="SoundPlay_Click" AutomationProperties.Name="{Binding PlayLabel}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</local:ThemedWindow>

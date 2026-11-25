@@ -1,0 +1,20 @@
+<local:ThemedWindow x:Class="ADM.App.GrabberStatsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="{l:T grabberstats.title}" Width="420" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <StackPanel Margin="18">
+        <Grid x:Name="Counts">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+        </Grid>
+        <TextBlock x:Name="LimitText" Margin="0,10,0,0" TextWrapping="Wrap" Foreground="{DynamicResource MutedText}" Visibility="Collapsed" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button Style="{StaticResource DialogButton}" Content="{l:T common.close}" IsDefault="True" IsCancel="True" />
+        </StackPanel>
+    </StackPanel>
+</local:ThemedWindow>

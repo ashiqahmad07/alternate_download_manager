@@ -1,0 +1,47 @@
+<local:ThemedWindow x:Class="ADM.App.CompleteWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="{l:T complete.download_complete}" Width="660" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen" ShowInTaskbar="True" ShowActivated="False" KeyDown="Window_KeyDown">
+    <StackPanel Margin="18">
+        <DockPanel>
+            <!-- The icon is the file: drag it to a folder or a program. -->
+            <Border x:Name="DragSource" Width="48" Height="48" Margin="0,0,14,0" Background="Transparent" Cursor="Hand"
+                    ToolTip="{l:T complete.drag_file_to_folder_or_program}" AutomationProperties.Name="{l:T complete.drag_file}"
+                    MouseLeftButtonDown="DragSource_MouseLeftButtonDown" MouseMove="DragSource_MouseMove">
+                <Image x:Name="FileIcon" Width="32" Height="32" />
+            </Border>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock x:Name="NameText" FontWeight="SemiBold" FontSize="{DynamicResource AppFontSizeLarge}" TextTrimming="CharacterEllipsis" />
+                <TextBlock x:Name="SizeText" Margin="0,3,0,0" Foreground="{DynamicResource MutedText}" />
+            </StackPanel>
+        </DockPanel>
+
+        <TextBlock x:Name="ScanText" Margin="0,14,0,0" TextWrapping="Wrap" FontWeight="SemiBold" Visibility="Collapsed" />
+
+        <Grid Margin="0,16,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T common.address}" />
+            <TextBox x:Name="UrlText" Grid.Column="1" IsReadOnly="True" Padding="4,3" AutomationProperties.Name="{l:T common.address}" />
+            <TextBlock Grid.Row="1" Style="{StaticResource FieldLabel}" Text="{l:T complete.saved_to}" Margin="0,8,10,0" />
+            <TextBox x:Name="PathText" Grid.Row="1" Grid.Column="1" IsReadOnly="True" Padding="4,3" Margin="0,8,0,0" AutomationProperties.Name="{l:T complete.saved_to}" />
+        </Grid>
+
+        <DockPanel Margin="0,20,0,0" LastChildFill="False">
+            <CheckBox x:Name="DontShowBox" VerticalAlignment="Center" Content="{l:T complete.dont_show_this_dialog_again}" />
+            <Button DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T common.close}" IsDefault="True" Click="Close_Click" />
+            <Button DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T complete.open_folder}" Click="OpenFolder_Click" />
+            <Button DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T complete.open_with}" Click="OpenWith_Click" />
+            <Button DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T common.open}" Click="Open_Click" />
+        </DockPanel>
+    </StackPanel>
+</local:ThemedWindow>

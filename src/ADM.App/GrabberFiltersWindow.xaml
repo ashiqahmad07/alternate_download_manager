@@ -1,0 +1,26 @@
+<local:ThemedWindow x:Class="ADM.App.GrabberFiltersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="{l:T grabberfilters.title}" Width="640" Height="420" MinWidth="480" MinHeight="300"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <DockPanel Margin="18">
+        <TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Foreground="{DynamicResource MutedText}" Text="{l:T grabberfilters.hint}" />
+        <DockPanel DockPanel.Dock="Bottom" Margin="0,14,0,0" LastChildFill="True">
+            <Button DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T common.cancel}" IsCancel="True" />
+            <Button DockPanel.Dock="Right" Style="{StaticResource DialogButton}" Content="{l:T common.ok}" IsDefault="True" Click="Ok_Click" />
+            <Button DockPanel.Dock="Left" Content="{l:T common.add}" Padding="10,3" Click="Add_Click" />
+            <Button DockPanel.Dock="Left" Content="{l:T common.delete}" Padding="10,3" Margin="6,0,0,0" Click="Delete_Click" />
+            <Button DockPanel.Dock="Left" Content="{l:T grabberfilters.defaults}" Padding="10,3" Margin="6,0,0,0" Click="Defaults_Click" />
+            <TextBlock x:Name="ProblemText" Foreground="{DynamicResource ErrorText}" TextWrapping="Wrap" VerticalAlignment="Center" Margin="12,0" />
+        </DockPanel>
+        <DataGrid x:Name="FilterGrid" Margin="0,10,0,0" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False"
+                  HeadersVisibility="Column" GridLinesVisibility="None" SelectionMode="Single" AutomationProperties.Name="{l:T grabberfilters.title}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="{l:T common.name}" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="170" EditingElementStyle="{StaticResource GridEditBox}" />
+                <DataGridTextColumn Header="{l:T grabberfilters.masks}" Binding="{Binding Mask, UpdateSourceTrigger=PropertyChanged}" Width="*" EditingElementStyle="{StaticResource GridEditBox}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</local:ThemedWindow>

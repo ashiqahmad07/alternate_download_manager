@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- ADM's version, in one place: every assembly carries it, and scripts\build-installer.ps1 takes the installer's from here. -->
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+</Project>

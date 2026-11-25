@@ -1,0 +1,48 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Surfaces -->
+    <SolidColorBrush x:Key="WindowBg" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="PanelBg" Color="#F8FAFC" />
+    <SolidColorBrush x:Key="InputBg" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="ButtonBg" Color="#F1F5F9" />
+    <SolidColorBrush x:Key="HoverBg" Color="#E2E8F0" />
+    <SolidColorBrush x:Key="PressedBg" Color="#D5DEE9" />
+    <SolidColorBrush x:Key="DisabledBg" Color="#F1F5F9" />
+    <SolidColorBrush x:Key="MenuBg" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="HeaderBg" Color="#F8FAFC" />
+    <SolidColorBrush x:Key="AltRowBg" Color="#FAFBFC" />
+    <SolidColorBrush x:Key="TrackBg" Color="#E2E8F0" />
+    <SolidColorBrush x:Key="ToolTipBg" Color="#F8FAFC" />
+
+    <!-- Text -->
+    <SolidColorBrush x:Key="Text" Color="#0F172A" />
+    <SolidColorBrush x:Key="MutedText" Color="#64748B" />
+    <SolidColorBrush x:Key="AccentText" Color="#1D4ED8" />
+    <SolidColorBrush x:Key="ErrorText" Color="#B91C1C" />
+    <SolidColorBrush x:Key="SyncText" Color="#15803D" />
+    <SolidColorBrush x:Key="WarningText" Color="#B45309" />
+    <SolidColorBrush x:Key="DisabledText" Color="#5F6F86" />
+    <SolidColorBrush x:Key="HoverText" Color="#0F172A" />
+
+    <!-- Selection -->
+    <SolidColorBrush x:Key="SelectionBg" Color="#2563EB" />
+    <SolidColorBrush x:Key="SelectionText" Color="#FFFFFF" />
+    <SolidColorBrush x:Key="InactiveSelectionBg" Color="#E2E8F0" />
+    <SolidColorBrush x:Key="InactiveSelectionText" Color="#0F172A" />
+
+    <!-- Lines and marks -->
+    <SolidColorBrush x:Key="BorderBrush" Color="#E2E8F0" />
+    <SolidColorBrush x:Key="ControlBorder" Color="#8792A2" />
+    <SolidColorBrush x:Key="FocusBorder" Color="#2563EB" />
+    <SolidColorBrush x:Key="Accent" Color="#2563EB" />
+    <SolidColorBrush x:Key="AccentSoft" Color="#93C5FD" />
+    <!-- The list's progress bars by state; AccentSoft fills a running one. A finished one is pale: most of a list is
+         finished, and the Status column's tick says so, so the rows still under way stand out. -->
+    <SolidColorBrush x:Key="DoneFill" Color="#DCF2E3" />
+    <SolidColorBrush x:Key="FailedFill" Color="#FCA5A5" />
+    <SolidColorBrush x:Key="WarningFill" Color="#FCD34D" />
+    <SolidColorBrush x:Key="PausedFill" Color="#B6C2D2" />
+    <SolidColorBrush x:Key="LiveFill" Color="#10B981" />
+    <SolidColorBrush x:Key="ScrollThumb" Color="#7C8BA1" />
+    <SolidColorBrush x:Key="ScrollThumbHover" Color="#64748B" />
+</ResourceDictionary>

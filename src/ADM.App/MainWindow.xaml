@@ -1,0 +1,521 @@
+<local:ThemedWindow x:Class="ADM.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="Alternate Download Manager" Height="640" Width="1120" MinWidth="780" MinHeight="440"
+        WindowStartupLocation="CenterScreen"
+        AllowDrop="True" DragEnter="Window_DragOver" DragOver="Window_DragOver" DragLeave="Window_DragLeave"
+        PreviewDrop="Window_PreviewDrop" Drop="Window_Drop">
+    <Window.Resources>
+        <local:QueueMarkConverter x:Key="QueueMark" />
+        <local:FileIconConverter x:Key="FileIcon" />
+        <!-- A text column's cell: WPF's own margin, centred in the row as the icons and marks beside it are, and cut
+             short with an ellipsis. -->
+        <Style x:Key="CellText" TargetType="TextBlock">
+            <Setter Property="Margin" Value="2,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        </Style>
+        <!-- The status column's mark: a shape for each state, so it reads without its colour too. On a selected row it
+             takes the cell's text colour, as the Q column does. -->
+        <Style x:Key="StatusMark" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Margin" Value="0,0,6,0" />
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Text" Value="&#xE823;" />
+            <Setter Property="Foreground" Value="{DynamicResource MutedText}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Look}" Value="Active">
+                    <Setter Property="Text" Value="&#xE896;" />
+                    <Setter Property="Foreground" Value="{DynamicResource AccentText}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Look}" Value="Paused">
+                    <Setter Property="Text" Value="&#xE769;" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Look}" Value="Warning">
+                    <Setter Property="Text" Value="&#xE7BA;" />
+                    <Setter Property="Foreground" Value="{DynamicResource WarningText}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Look}" Value="Failed">
+                    <Setter Property="Text" Value="&#xE783;" />
+                    <Setter Property="Foreground" Value="{DynamicResource ErrorText}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Look}" Value="Done">
+                    <Setter Property="Text" Value="&#xE73E;" />
+                    <Setter Property="Foreground" Value="{DynamicResource SyncText}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True">
+                    <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGridCell}}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <!-- The progress column's bar, filled in the colour of the download's state. -->
+        <Style x:Key="ProgressFill" TargetType="ProgressBar" BasedOn="{StaticResource {x:Type ProgressBar}}">
+            <Setter Property="Foreground" Value="{DynamicResource AccentSoft}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Look}" Value="Waiting">
+                    <Setter Property="Foreground" Value="{DynamicResource PausedFill}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Look}" Value="Paused">
+                    <Setter Property="Foreground" Value="{DynamicResource PausedFill}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Look}" Value="Warning">
+                    <Setter Property="Foreground" Value="{DynamicResource WarningFill}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Look}" Value="Failed">
+                    <Setter Property="Foreground" Value="{DynamicResource FailedFill}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Look}" Value="Done">
+                    <Setter Property="Foreground" Value="{DynamicResource DoneFill}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <!-- On a selected row the Q column takes the cell's text colour, which follows the selection (active or not). -->
+        <Style x:Key="QueueMarkText" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource MutedText}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=DataGridRow}}" Value="True">
+                    <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=DataGridCell}}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <!-- A sidebar entry's count: muted, and in the entry's own colour where hovering or selecting changes it. -->
+        <Style x:Key="SidebarCount" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource MutedText}" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                    <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                    <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <!-- Right-clicking any column header lists the columns. -->
+        <ContextMenu x:Key="HeaderMenu" Opened="HeaderMenu_Opened" />
+    </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key="N" Modifiers="Ctrl" Command="{x:Static local:MainWindow.AddUrlCommand}" />
+        <KeyBinding Key="Delete" Command="{x:Static local:MainWindow.DeleteCommand}" />
+        <KeyBinding Key="F" Modifiers="Ctrl" Command="{x:Static local:MainWindow.FindCommand}" />
+        <KeyBinding Key="F3" Command="{x:Static local:MainWindow.FindNextCommand}" />
+        <KeyBinding Key="E" Modifiers="Ctrl" Command="{x:Static local:MainWindow.FilterCommand}" />
+    </Window.InputBindings>
+    <Window.CommandBindings>
+        <CommandBinding Command="{x:Static local:MainWindow.AddUrlCommand}" Executed="AddUrl_Click" />
+        <CommandBinding Command="{x:Static local:MainWindow.DeleteCommand}" Executed="Delete_Click" />
+        <CommandBinding Command="{x:Static local:MainWindow.FindCommand}" Executed="Find_Click" />
+        <CommandBinding Command="{x:Static local:MainWindow.FindNextCommand}" Executed="FindNext_Click" />
+        <CommandBinding Command="{x:Static local:MainWindow.FilterCommand}" Executed="Filter_Executed" />
+        <!-- Ctrl+V outside a text box adds the links on the clipboard; a text box pastes into itself first. -->
+        <CommandBinding Command="ApplicationCommands.Paste" Executed="Paste_Executed" />
+    </Window.CommandBindings>
+
+    <Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="{l:T main.tasks}">
+                <MenuItem Header="{l:T main.add_url}" InputGestureText="Ctrl+N" Click="AddUrl_Click" />
+                <MenuItem Header="{l:T main.add_batch_download}" Click="AddBatch_Click" />
+                <MenuItem Header="{l:T main.batch_download_from_clipboard}" Click="BatchFromClipboard_Click" />
+                <MenuItem Header="{l:T main.site_grabber}" Click="NewGrabber_Click" />
+                <Separator />
+                <MenuItem Header="{l:T main.import}">
+                    <MenuItem Header="{l:T main.from_text_file}" Click="ImportText_Click" />
+                    <MenuItem Header="{l:T main.from_idm_export_file}" Click="ImportExportFile_Click" />
+                </MenuItem>
+                <MenuItem Header="{l:T main.export}" SubmenuOpened="ExportMenu_SubmenuOpened">
+                    <MenuItem Header="{l:T main.to_text_file}" Click="ExportText_Click" />
+                    <MenuItem Header="{l:T main.to_idm_export_file}" Click="ExportAll_Click" />
+                    <MenuItem x:Name="ExportSelectedItem" Header="{l:T main.selected_downloads_to_idm_export_file}" Click="ExportSelected_Click" />
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="{l:T main.exit}" Click="Exit_Click" />
+            </MenuItem>
+            <MenuItem Header="{l:T main.file}" SubmenuOpened="FileMenu_SubmenuOpened">
+                <MenuItem Header="{l:T main.open}" Click="Open_Click" />
+                <MenuItem x:Name="FileOpenWithItem" Header="{l:T main.open_with_menu}" Click="OpenWith_Click" />
+                <MenuItem Header="{l:T main.open_folder_menu}" Click="OpenFolder_Click" />
+                <MenuItem Header="{l:T main.move_rename_menu}" Click="MoveRename_Click" />
+                <MenuItem x:Name="FilePreviewZipItem" Header="{l:T main.preview_zip_menu}" Click="PreviewZip_Click" />
+                <Separator />
+                <MenuItem Header="{l:T main.redownload_menu}" Click="Redownload_Click" />
+                <MenuItem Header="{l:T main.resume_menu}" Click="Resume_Click" />
+                <MenuItem Header="{l:T main.pause_menu}" Click="Pause_Click" />
+                <MenuItem Header="{l:T main.refresh_download_address_menu}" Click="RefreshAddress_Click" />
+                <MenuItem Header="{l:T main.stop_recording_and_save_menu}" Click="StopAndSave_Click" />
+                <MenuItem Header="{l:T main.speed_limit_menu}" Click="SpeedLimit_Click" />
+                <Separator />
+                <MenuItem Header="{l:T main.delete}" InputGestureText="Del" Click="Delete_Click" />
+                <Separator />
+                <MenuItem Header="{l:T main.properties_menu}" Click="Properties_Click" />
+            </MenuItem>
+            <MenuItem Header="{l:T main.downloads}">
+                <MenuItem Header="{l:T main.pause_all}" Click="PauseAll_Click" />
+                <MenuItem Header="{l:T main.delete_all_completed}" Click="DeleteCompleted_Click" />
+                <Separator />
+                <MenuItem Header="{l:T main.find_3}" InputGestureText="Ctrl+F" Click="Find_Click" />
+                <MenuItem Header="{l:T main.find_next_menu}" InputGestureText="F3" Click="FindNext_Click" />
+                <Separator />
+                <MenuItem Header="{l:T main.scheduler}" Click="Scheduler_Click" />
+                <MenuItem Header="{l:T main.new_queue_menu}" Click="NewQueue_Click" />
+                <MenuItem x:Name="StartQueueMenu" Header="{l:T main.start_queue}" SubmenuOpened="StartQueueMenu_SubmenuOpened">
+                    <MenuItem Header="{l:T main.none}" IsEnabled="False" />
+                </MenuItem>
+                <MenuItem x:Name="StopQueueMenu" Header="{l:T main.stop_queue}" SubmenuOpened="StopQueueMenu_SubmenuOpened">
+                    <MenuItem Header="{l:T main.none}" IsEnabled="False" />
+                </MenuItem>
+                <Separator />
+                <MenuItem x:Name="SpeedLimiterMenu" Header="{l:T main.speed_limiter}" SubmenuOpened="SpeedLimiterMenu_SubmenuOpened">
+                    <MenuItem x:Name="LimiterOnItem" Header="{l:T main.turn_on}" IsCheckable="True" Click="LimiterOn_Click" />
+                    <MenuItem x:Name="LimiterOffItem" Header="{l:T main.turn_off}" IsCheckable="True" Click="LimiterOff_Click" />
+                    <Separator />
+                    <MenuItem Header="{l:T main.settings_menu}" Click="LimiterSettings_Click" />
+                </MenuItem>
+                <MenuItem Header="{l:T main.options}" Click="Options_Click" />
+            </MenuItem>
+            <MenuItem Header="{l:T main.view}" SubmenuOpened="ViewMenu_SubmenuOpened">
+                <MenuItem x:Name="CategoriesItem" Header="{l:T main.hide_categories_menu}" Click="ToggleCategories_Click" />
+                <MenuItem x:Name="ArrangeMenu" Header="{l:T main.arrange_files}" />
+                <MenuItem Header="{l:T main.columns}" Click="Columns_Click" />
+                <MenuItem Header="{l:T main.toolbar_menu}">
+                    <MenuItem Header="{l:T main.customize_menu}" Click="CustomizeToolbar_Click" />
+                    <Separator />
+                    <MenuItem x:Name="LargeButtonsItem" Header="{l:T main.large_buttons_menu}" IsCheckable="True" Click="LargeButtons_Click" />
+                    <MenuItem x:Name="SmallButtonsItem" Header="{l:T main.small_buttons_menu}" IsCheckable="True" Click="SmallButtons_Click" />
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="{l:T main.dark_mode}">
+                    <MenuItem x:Name="ThemeFollowItem" Header="{l:T main.follow_windows}" IsCheckable="True" Click="ThemeFollow_Click" />
+                    <MenuItem x:Name="ThemeLightItem" Header="{l:T main.light}" IsCheckable="True" Click="ThemeLight_Click" />
+                    <MenuItem x:Name="ThemeDarkItem" Header="{l:T main.dark}" IsCheckable="True" Click="ThemeDark_Click" />
+                </MenuItem>
+                <MenuItem Header="{l:T main.font}">
+                    <MenuItem Header="{l:T main.choose_font}" Click="ChooseFont_Click" />
+                    <MenuItem Header="{l:T main.reset_to_default_font}" Click="ResetFont_Click" />
+                </MenuItem>
+                <MenuItem x:Name="LanguageMenu" Header="{l:T main.language}" SubmenuOpened="LanguageMenu_Opened" />
+            </MenuItem>
+        </Menu>
+
+        <Border DockPanel.Dock="Top" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,1" Background="{DynamicResource PanelBg}">
+            <DockPanel>
+            <!-- Narrows the list, as typed, to the downloads whose names have the text; Esc empties it. -->
+            <Grid DockPanel.Dock="Right" Width="220" Margin="6,0,12,0" VerticalAlignment="Center">
+                <TextBox x:Name="SearchBox" Padding="24,3,22,3" TextChanged="SearchBox_TextChanged" KeyDown="SearchBox_KeyDown"
+                         AutomationProperties.Name="{l:T main.filter_box}" ToolTip="{l:T main.filter_box_tip}" />
+                <TextBlock Style="{StaticResource Glyph}" FontSize="12" Text="&#xE721;" HorizontalAlignment="Left" VerticalAlignment="Center"
+                           Margin="8,0,0,0" Foreground="{DynamicResource MutedText}" IsHitTestVisible="False" />
+                <TextBlock x:Name="SearchHint" Margin="26,0,0,0" VerticalAlignment="Center" Text="{l:T main.filter_box}"
+                           Foreground="{DynamicResource MutedText}" IsHitTestVisible="False" />
+                <Button x:Name="SearchClear" Style="{StaticResource ToolButton}" HorizontalAlignment="Right" Margin="0,0,1,0" Padding="6,3"
+                        Visibility="Collapsed" Click="SearchClear_Click" ToolTip="{l:T main.filter_clear}" AutomationProperties.Name="{l:T main.filter_clear}">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="10" Text="&#xE711;" />
+                </Button>
+            </Grid>
+            <WrapPanel x:Name="ToolbarPanel" Margin="6,4" Background="Transparent" AutomationProperties.Name="{l:T main.toolbar}">
+                <WrapPanel.ContextMenu>
+                    <ContextMenu Opened="ToolbarMenu_Opened">
+                        <MenuItem Header="{l:T main.customize}" Click="CustomizeToolbar_Click" />
+                        <Separator />
+                        <MenuItem x:Name="ToolbarLargeItem" Header="{l:T main.large_buttons}" IsCheckable="True" Click="LargeButtons_Click" />
+                        <MenuItem x:Name="ToolbarSmallItem" Header="{l:T main.small_buttons}" IsCheckable="True" Click="SmallButtons_Click" />
+                    </ContextMenu>
+                </WrapPanel.ContextMenu>
+            </WrapPanel>
+            </DockPanel>
+        </Border>
+
+        <StatusBar DockPanel.Dock="Bottom" Background="{DynamicResource PanelBg}">
+            <TextBlock x:Name="StatusText" Foreground="{DynamicResource MutedText}" />
+        </StatusBar>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="SidebarColumn" Width="190" MinWidth="120" />
+                <ColumnDefinition x:Name="SplitterColumn" Width="4" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <ListBox x:Name="FilterList" BorderThickness="0" Background="{DynamicResource PanelBg}" Padding="0,2,0,6"
+                     SelectionChanged="FilterList_SelectionChanged" MouseDoubleClick="FilterList_MouseDoubleClick"
+                     AutomationProperties.Name="{l:T main.categories_and_queues}">
+                <!-- Status, categories, queues and the grabber, each under its heading, so a category reads as a
+                     filter of every download rather than of the finished ones above it. -->
+                <ListBox.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" Margin="14,10,14,3" FontSize="{DynamicResource AppFontSizeSmall}"
+                                           FontWeight="SemiBold" Foreground="{DynamicResource MutedText}" />
+                            </DataTemplate>
+                        </GroupStyle.HeaderTemplate>
+                    </GroupStyle>
+                </ListBox.GroupStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Right" Margin="8,0,0,0" Text="{Binding Count}" VerticalAlignment="Center"
+                                       FontSize="{DynamicResource AppFontSizeSmall}" Style="{StaticResource SidebarCount}" />
+                            <TextBlock Text="{Binding Label}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu x:Name="QueueContextMenu" Opened="QueueContextMenu_Opened">
+                        <MenuItem x:Name="QueueStartItem" Header="{l:T main.start}" Click="QueueStart_Click" />
+                        <MenuItem x:Name="QueueStopItem" Header="{l:T common.stop}" Click="QueueStop_Click" />
+                        <MenuItem x:Name="QueueEditItem" Header="{l:T main.edit}" Click="QueueEdit_Click" />
+                        <Separator x:Name="QueueSeparator" />
+                        <MenuItem x:Name="QueueNewItem" Header="{l:T main.new_queue}" Click="NewQueue_Click" />
+                        <MenuItem x:Name="QueueDeleteItem" Header="{l:T common.delete}" Click="QueueDelete_Click" />
+                        <MenuItem x:Name="ProjectOpenItem" Header="{l:T main.project_open}" Click="ProjectOpen_Click" />
+                        <MenuItem x:Name="ProjectScheduleItem" Header="{l:T main.project_schedule}" Click="ProjectSchedule_Click" />
+                        <MenuItem x:Name="ProjectDeleteItem" Header="{l:T main.project_delete}" Click="ProjectDelete_Click" />
+                        <MenuItem x:Name="ProjectNewItem" Header="{l:T main.project_new}" Click="NewGrabber_Click" />
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                        <Setter Property="Padding" Value="14,5" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+            <GridSplitter x:Name="SidebarSplitter" Grid.Column="1" HorizontalAlignment="Stretch" Background="{DynamicResource BorderBrush}" />
+
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="4" />
+                    <!-- As tall as one download's details, the taller of the two panes; see UpdateOverview. -->
+                    <RowDefinition Height="Auto" MinHeight="60" />
+                </Grid.RowDefinitions>
+
+                <Border x:Name="FindBar" Visibility="Collapsed" Background="{DynamicResource PanelBg}"
+                        BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="10,6">
+                    <DockPanel>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource ToolButton}" Padding="6,2" Click="CloseFind_Click"
+                                AutomationProperties.Name="{l:T main.close_find_bar}" ToolTip="{l:T main.close_esc}">
+                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="11" Text="&#xE711;" />
+                        </Button>
+                        <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T main.find}" />
+                        <TextBox x:Name="FindBox" Width="240" Padding="4,2" KeyDown="FindBox_KeyDown" AutomationProperties.Name="{l:T main.find_2}" />
+                        <Button Content="{l:T main.find_next}" Padding="10,2" Margin="6,0,0,0" Click="FindNext_Click" />
+                        <Button Content="{l:T main.settings}" Padding="10,2" Margin="6,0,0,0" Click="FindSettings_Click" />
+                        <TextBlock x:Name="FindMessage" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="{DynamicResource MutedText}"
+                                   AutomationProperties.LiveSetting="Polite" />
+                    </DockPanel>
+                </Border>
+
+                <DataGrid x:Name="Downloads" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Extended"
+                          HeadersVisibility="Column" GridLinesVisibility="None" BorderThickness="0" RowHeight="{DynamicResource AppRowHeight}"
+                          CanUserResizeRows="False" EnableColumnVirtualization="True"
+                          MouseDoubleClick="Downloads_MouseDoubleClick" Sorting="Downloads_Sorting" ColumnReordered="Downloads_ColumnReordered"
+                          SelectionChanged="Downloads_SelectionChanged"
+                          PreviewMouseLeftButtonDown="Downloads_PreviewMouseLeftButtonDown" PreviewMouseMove="Downloads_PreviewMouseMove"
+                          PreviewMouseLeftButtonUp="Downloads_PreviewMouseLeftButtonUp">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                            <Setter Property="ContextMenu" Value="{StaticResource HeaderMenu}" />
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu Opened="RowMenu_Opened">
+                            <MenuItem Header="{l:T common.open}" Click="Open_Click" />
+                            <MenuItem x:Name="RowOpenWithItem" Header="{l:T main.open_with}" Click="OpenWith_Click" />
+                            <MenuItem Header="{l:T main.open_folder}" Click="OpenFolder_Click" />
+                            <MenuItem Header="{l:T main.move_rename}" Click="MoveRename_Click" />
+                            <MenuItem x:Name="RowPreviewZipItem" Header="{l:T main.preview_zip}" Click="PreviewZip_Click" />
+                            <Separator />
+                            <MenuItem Header="{l:T main.redownload}" Click="Redownload_Click" />
+                            <MenuItem Header="{l:T main.resume}" Click="Resume_Click" />
+                            <MenuItem Header="{l:T main.pause}" Click="Pause_Click" />
+                            <MenuItem Header="{l:T main.refresh_download_address}" Click="RefreshAddress_Click" />
+                            <MenuItem Header="{l:T main.stop_recording_and_save}" Click="StopAndSave_Click" />
+                            <MenuItem Header="{l:T main.speed_limit}" Click="SpeedLimit_Click" />
+                            <Separator />
+                            <MenuItem x:Name="MoveToQueueMenu" Header="{l:T main.move_to_queue}" SubmenuOpened="MoveToQueueMenu_SubmenuOpened">
+                                <MenuItem Header="{l:T main.none}" IsEnabled="False" />
+                            </MenuItem>
+                            <MenuItem Header="{l:T main.remove_from_queue}" Click="RemoveFromQueue_Click" />
+                            <MenuItem Header="{l:T main.copy_address}" Click="CopyUrl_Click" />
+                            <Separator />
+                            <MenuItem Header="{l:T common.delete}" Click="Delete_Click" />
+                            <Separator />
+                            <MenuItem Header="{l:T main.on_double_click}">
+                                <MenuItem x:Name="DoubleClickOpenItem" Header="{l:T common.open}" IsCheckable="True" Click="DoubleClickOpen_Click" />
+                                <MenuItem x:Name="DoubleClickPropertiesItem" Header="{l:T main.properties}" IsCheckable="True" Click="DoubleClickProperties_Click" />
+                            </MenuItem>
+                            <MenuItem Header="{l:T main.properties}" Click="Properties_Click" />
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn x:Name="ColQ" Header="{l:T main.q}" Width="40" SortMemberPath="QueuePosition">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0,0,0" Background="Transparent">
+                                        <StackPanel.ToolTip>
+                                            <MultiBinding Converter="{StaticResource QueueMark}" ConverterParameter="name">
+                                                <Binding Path="QueueId" />
+                                                <Binding Path="QueuePosition" />
+                                            </MultiBinding>
+                                        </StackPanel.ToolTip>
+                                        <AutomationProperties.Name>
+                                            <MultiBinding Converter="{StaticResource QueueMark}" ConverterParameter="name">
+                                                <Binding Path="QueueId" />
+                                                <Binding Path="QueuePosition" />
+                                            </MultiBinding>
+                                        </AutomationProperties.Name>
+                                        <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="12" VerticalAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource QueueMark}" ConverterParameter="glyph">
+                                                    <Binding Path="QueueId" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock" BasedOn="{StaticResource QueueMarkText}">
+                                                    <Setter Property="Foreground">
+                                                        <Setter.Value>
+                                                            <MultiBinding Converter="{StaticResource QueueMark}" ConverterParameter="brush">
+                                                                <Binding Path="QueueId" />
+                                                                <Binding Path="(local:Theme.Revision)" />
+                                                            </MultiBinding>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Margin="4,0,0,0" FontSize="{DynamicResource AppFontSizeSmall}" VerticalAlignment="Center" Style="{StaticResource QueueMarkText}">
+                                            <TextBlock.Text>
+                                                <MultiBinding Converter="{StaticResource QueueMark}" ConverterParameter="position">
+                                                    <Binding Path="QueueId" />
+                                                    <Binding Path="QueuePosition" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <!-- It takes the room the other columns leave, unless the user gives it a width. -->
+                        <DataGridTemplateColumn x:Name="ColFileName" Header="{l:T common.file_name}" Width="*" MinWidth="120" SortMemberPath="FileName"
+                                                ClipboardContentBinding="{Binding FileName}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <!-- A long name is cut short; its tip has it whole. -->
+                                    <DockPanel Margin="4,0,2,0" VerticalAlignment="Center" Background="Transparent" ToolTip="{Binding FileName}">
+                                        <Image Width="16" Height="16" Margin="0,0,6,0" VerticalAlignment="Center"
+                                               RenderOptions.BitmapScalingMode="HighQuality"
+                                               Source="{Binding FileName, Converter={StaticResource FileIcon}}" />
+                                        <TextBlock Text="{Binding FileName}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn ElementStyle="{StaticResource CellText}" x:Name="ColSize" Header="{l:T common.size}" Binding="{Binding SizeText}" Width="85" />
+                        <DataGridTemplateColumn x:Name="ColProgress" Header="{l:T main.progress}" Width="130" SortMemberPath="Progress">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="2,4">
+                                        <ProgressBar Value="{Binding Progress, Mode=OneWay}" Maximum="100" Style="{StaticResource ProgressFill}" />
+                                        <TextBlock Text="{Binding ProgressText}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="{DynamicResource AppFontSizeSmall}" Foreground="{DynamicResource Text}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn ElementStyle="{StaticResource CellText}" x:Name="ColTransferRate" Header="{l:T main.transfer_rate}" Binding="{Binding SpeedText}" Width="100" />
+                        <DataGridTextColumn ElementStyle="{StaticResource CellText}" x:Name="ColTimeLeft" Header="{l:T main.time_left}" Binding="{Binding EtaText}" Width="80" />
+                        <!-- An error can be long: the cell cuts it short, and its tip has it whole. -->
+                        <DataGridTemplateColumn x:Name="ColStatus" Header="{l:T common.status}" Width="150" SortMemberPath="StatusText"
+                                                ClipboardContentBinding="{Binding StatusText}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <DockPanel Margin="4,0,2,0" VerticalAlignment="Center" Background="Transparent" ToolTip="{Binding StatusText}">
+                                        <TextBlock Style="{StaticResource StatusMark}" />
+                                        <TextBlock Text="{Binding StatusText}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                    </DockPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn ElementStyle="{StaticResource CellText}" x:Name="ColResume" Header="{l:T main.resume}" Binding="{Binding ResumeText}" Width="62" />
+                        <DataGridTextColumn ElementStyle="{StaticResource CellText}" x:Name="ColLastTry" Header="{l:T main.last_try}" Binding="{Binding LastTryAt, StringFormat=g}" Width="130" />
+                        <DataGridTextColumn ElementStyle="{StaticResource CellText}" x:Name="ColDescription" Header="{l:T common.description}" Binding="{Binding Description}" Width="160" />
+                        <DataGridTextColumn ElementStyle="{StaticResource CellText}" x:Name="ColCategory" Header="{l:T main.category}" Binding="{Binding Category}" Width="90" />
+                        <DataGridTextColumn ElementStyle="{StaticResource CellText}" x:Name="ColDateAdded" Header="{l:T main.date_added}" Binding="{Binding AddedAt, StringFormat=g}" Width="130" />
+                        <DataGridTextColumn ElementStyle="{StaticResource CellText}" x:Name="ColSaveTo" Header="{l:T common.save_to}" Binding="{Binding FullPath, Mode=OneWay}" Width="200" />
+                        <DataGridTextColumn ElementStyle="{StaticResource CellText}" x:Name="ColReferer" Header="{l:T main.referer}" Binding="{Binding Referrer}" Width="200" />
+                        <DataGridTextColumn ElementStyle="{StaticResource CellText}" x:Name="ColParentPage" Header="{l:T main.parent_web_page}" Binding="{Binding PageUrl}" Width="200" />
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- What an empty list says, and how to fill it. -->
+                <StackPanel x:Name="EmptyState" Grid.Row="1" MaxWidth="440" Margin="24" Visibility="Collapsed"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Style="{StaticResource Glyph}" FontSize="36" Foreground="{DynamicResource MutedText}" Text="&#xE896;" />
+                    <TextBlock x:Name="EmptyTitle" Margin="0,12,0,0" FontSize="{DynamicResource AppFontSizeLarge}" FontWeight="SemiBold"
+                               HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                    <TextBlock x:Name="EmptyHint" Margin="0,6,0,0" Foreground="{DynamicResource MutedText}"
+                               HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap" />
+                    <Button x:Name="EmptyAddButton" Margin="0,16,0,0" Padding="14,5" HorizontalAlignment="Center"
+                            Content="{l:T main.empty_add_url}" Click="AddUrl_Click" />
+                </StackPanel>
+
+                <GridSplitter Grid.Row="2" HorizontalAlignment="Stretch" Background="{DynamicResource BorderBrush}" />
+
+                <!-- With no download picked, or several, the totals of what is listed or picked. -->
+                <StackPanel x:Name="SummaryPane" Grid.Row="3" Margin="14,10" Visibility="Collapsed">
+                    <TextBlock x:Name="SummaryTitle" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                    <TextBlock x:Name="SummaryStates" Margin="0,6,0,0" Foreground="{DynamicResource MutedText}" TextTrimming="CharacterEllipsis" />
+                    <TextBlock x:Name="SummarySizes" Margin="0,4,0,0" Foreground="{DynamicResource MutedText}" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+
+                <Grid x:Name="DetailsPane" Grid.Row="3" Margin="14,10" Visibility="Hidden" DataContext="{Binding SelectedItem, ElementName=Downloads}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T main.url}" />
+                    <TextBox Grid.Column="1" Text="{Binding Url, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" />
+                    <TextBlock Grid.Row="1" Style="{StaticResource FieldLabel}" Text="{l:T common.save_to}" Margin="0,4,10,0" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding FullPath, Mode=OneWay}" IsReadOnly="True" BorderThickness="0" Background="Transparent" Margin="0,4,0,0" />
+                    <TextBlock Grid.Row="2" Style="{StaticResource FieldLabel}" Text="{l:T common.connections}" Margin="0,4,10,0" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,4,0,0">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{l:T main.connections_active_of}">
+                                <Binding Path="ActiveConnections" Mode="OneWay" />
+                                <Binding Path="MaxConnections" Mode="OneWay" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <local:SegmentBar x:Name="Segments" Grid.Row="3" Grid.ColumnSpan="2" Height="16" Margin="0,10,0,0"
+                                      Item="{Binding SelectedItem, ElementName=Downloads}" />
+                </Grid>
+            </Grid>
+        </Grid>
+    </DockPanel>
+
+    <!-- Shown while something that holds links is dragged over the window; the drop itself goes to what is under it. -->
+    <Grid x:Name="DropOverlay" Visibility="Collapsed" IsHitTestVisible="False">
+        <Rectangle Fill="{DynamicResource WindowBg}" Opacity="0.9" />
+        <Rectangle Margin="12" Stroke="{DynamicResource Accent}" StrokeThickness="2" StrokeDashArray="4 3" RadiusX="6" RadiusY="6" />
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Style="{StaticResource Glyph}" FontSize="36" Text="&#xE896;" />
+            <TextBlock Margin="0,10,0,0" HorizontalAlignment="Center" FontSize="{DynamicResource AppFontSizeLarge}" FontWeight="SemiBold"
+                       Foreground="{DynamicResource Text}" Text="{l:T main.drop_to_add}" />
+        </StackPanel>
+    </Grid>
+    </Grid>
+</local:ThemedWindow>

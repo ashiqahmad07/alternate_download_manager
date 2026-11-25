@@ -1,0 +1,9 @@
+{
+  "id": "short1",
+  "title": "A phone video",
+  "webpage_url": "https://www.youtube.com/shorts/short1",
+  "formats": [
+    { "format_id": "137", "url": "https://rr1.googlevideo.com/videoplayback?itag=137", "protocol": "https", "ext": "mp4", "vcodec": "avc1.640028", "acodec": "none", "width": 1080, "height": 1920, "fps": 30, "tbr": 2500 },
+    { "format_id": "140", "url": "https://rr1.googlevideo.com/videoplayback?itag=140", "protocol": "https", "ext": "m4a", "vcodec": "none", "acodec": "mp4a.40.2", "tbr": 129 }
+  ]
+}

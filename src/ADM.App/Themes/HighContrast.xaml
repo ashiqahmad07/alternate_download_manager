@@ -1,0 +1,48 @@
+<!-- Used whenever a Windows contrast theme is on, whatever the settings say: the colours are the ones the user chose in Windows. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Surfaces -->
+    <x:Static x:Key="WindowBg" Member="SystemColors.WindowBrush" />
+    <x:Static x:Key="PanelBg" Member="SystemColors.WindowBrush" />
+    <x:Static x:Key="InputBg" Member="SystemColors.WindowBrush" />
+    <x:Static x:Key="ButtonBg" Member="SystemColors.ControlBrush" />
+    <x:Static x:Key="HoverBg" Member="SystemColors.HighlightBrush" />
+    <x:Static x:Key="PressedBg" Member="SystemColors.HighlightBrush" />
+    <x:Static x:Key="DisabledBg" Member="SystemColors.WindowBrush" />
+    <x:Static x:Key="MenuBg" Member="SystemColors.MenuBrush" />
+    <x:Static x:Key="HeaderBg" Member="SystemColors.ControlBrush" />
+    <x:Static x:Key="AltRowBg" Member="SystemColors.WindowBrush" />
+    <x:Static x:Key="TrackBg" Member="SystemColors.WindowBrush" />
+    <x:Static x:Key="ToolTipBg" Member="SystemColors.InfoBrush" />
+
+    <!-- Text -->
+    <x:Static x:Key="Text" Member="SystemColors.WindowTextBrush" />
+    <x:Static x:Key="MutedText" Member="SystemColors.WindowTextBrush" />
+    <x:Static x:Key="AccentText" Member="SystemColors.WindowTextBrush" />
+    <x:Static x:Key="ErrorText" Member="SystemColors.WindowTextBrush" />
+    <x:Static x:Key="SyncText" Member="SystemColors.WindowTextBrush" />
+    <x:Static x:Key="WarningText" Member="SystemColors.WindowTextBrush" />
+    <x:Static x:Key="DisabledText" Member="SystemColors.GrayTextBrush" />
+    <x:Static x:Key="HoverText" Member="SystemColors.HighlightTextBrush" />
+
+    <!-- Selection -->
+    <x:Static x:Key="SelectionBg" Member="SystemColors.HighlightBrush" />
+    <x:Static x:Key="SelectionText" Member="SystemColors.HighlightTextBrush" />
+    <x:Static x:Key="InactiveSelectionBg" Member="SystemColors.HighlightBrush" />
+    <x:Static x:Key="InactiveSelectionText" Member="SystemColors.HighlightTextBrush" />
+
+    <!-- Lines and marks -->
+    <x:Static x:Key="BorderBrush" Member="SystemColors.WindowTextBrush" />
+    <x:Static x:Key="ControlBorder" Member="SystemColors.WindowTextBrush" />
+    <x:Static x:Key="FocusBorder" Member="SystemColors.HighlightBrush" />
+    <x:Static x:Key="Accent" Member="SystemColors.HighlightBrush" />
+    <x:Static x:Key="AccentSoft" Member="SystemColors.WindowBrush" />
+    <!-- Under a contrast theme the state shows by the status column's mark, not by colour. -->
+    <x:Static x:Key="DoneFill" Member="SystemColors.WindowBrush" />
+    <x:Static x:Key="FailedFill" Member="SystemColors.WindowBrush" />
+    <x:Static x:Key="WarningFill" Member="SystemColors.WindowBrush" />
+    <x:Static x:Key="PausedFill" Member="SystemColors.WindowBrush" />
+    <x:Static x:Key="LiveFill" Member="SystemColors.WindowTextBrush" />
+    <x:Static x:Key="ScrollThumb" Member="SystemColors.WindowTextBrush" />
+    <x:Static x:Key="ScrollThumbHover" Member="SystemColors.HighlightBrush" />
+</ResourceDictionary>

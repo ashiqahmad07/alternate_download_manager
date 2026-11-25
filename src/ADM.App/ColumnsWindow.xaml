@@ -1,0 +1,34 @@
+<local:ThemedWindow x:Class="ADM.App.ColumnsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:ADM.App"
+        xmlns:local="clr-namespace:ADM.App"
+        Title="{l:T columns.columns}" Width="440" Height="500" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <DockPanel Margin="16">
+        <TextBlock DockPanel.Dock="Top" Margin="0,0,0,8" TextWrapping="Wrap" Text="{l:T columns.tick_columns_to_show_and_put}" />
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button Style="{StaticResource DialogButton}" Content="{l:T common.ok}" IsDefault="True" Click="Ok_Click" />
+            <Button Style="{StaticResource DialogButton}" Content="{l:T common.cancel}" IsCancel="True" />
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,10,0,0">
+            <TextBlock Style="{StaticResource FieldLabel}" Text="{l:T columns.width_of_selected_column_in_pixels}" />
+            <TextBox x:Name="WidthBox" Width="60" Padding="4,2" TextChanged="WidthBox_TextChanged" AutomationProperties.Name="{l:T columns.width_in_pixels}"
+                     ToolTip="{l:T columns.fill_hint}" AutomationProperties.HelpText="{l:T columns.fill_hint}" />
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Right" Margin="10,0,0,0" MinWidth="96">
+            <Button Content="{l:T columns.move_up}" Padding="0,4" Click="MoveUp_Click" />
+            <Button Content="{l:T columns.move_down}" Padding="0,4" Margin="0,6,0,0" Click="MoveDown_Click" />
+            <Button Content="{l:T columns.show}" Padding="0,4" Margin="0,18,0,0" Click="Show_Click" />
+            <Button Content="{l:T columns.hide}" Padding="0,4" Margin="0,6,0,0" Click="Hide_Click" />
+            <Button Content="{l:T columns.reset}" Padding="0,4" Margin="0,18,0,0" Click="Reset_Click" />
+        </StackPanel>
+        <ListBox x:Name="ColumnList" SelectionChanged="ColumnList_SelectionChanged" AutomationProperties.Name="{l:T columns.columns}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <CheckBox Content="{Binding Label}" IsChecked="{Binding Visible}" IsEnabled="{Binding CanHide}" AutomationProperties.Name="{Binding Label}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</local:ThemedWindow>

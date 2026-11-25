@@ -1,0 +1,20 @@
+{
+  "id": "abc123",
+  "title": "ভিডিও: পরীক্ষা/১",
+  "webpage_url": "https://www.youtube.com/watch?v=abc123",
+  "is_live": false,
+  "formats": [
+    { "format_id": "sb0", "url": "https://i.ytimg.com/sb/abc123/storyboard3_L0/default.jpg", "protocol": "mhtml", "ext": "mhtml", "vcodec": "none", "acodec": "none", "width": 48, "height": 27 },
+    { "format_id": "18", "url": "https://rr1.googlevideo.com/videoplayback?itag=18", "protocol": "https", "ext": "mp4", "vcodec": "avc1.42001E", "acodec": "mp4a.40.2", "width": 640, "height": 360, "fps": 30, "filesize": 9000000, "tbr": 500, "http_headers": { "User-Agent": "Mozilla/5.0 (test)", "Accept": "*/*" } },
+    { "format_id": "134", "url": "https://rr1.googlevideo.com/videoplayback?itag=134", "protocol": "https", "ext": "mp4", "vcodec": "avc1.4d401e", "acodec": "none", "width": 640, "height": 360, "fps": 30, "filesize": 6000000, "tbr": 300, "http_headers": { "User-Agent": "Mozilla/5.0 (test)" } },
+    { "format_id": "243", "url": "https://rr1.googlevideo.com/videoplayback?itag=243", "protocol": "https", "ext": "webm", "vcodec": "vp9", "acodec": "none", "width": 640, "height": 360, "fps": 30, "filesize": 5000000, "tbr": 250 },
+    { "format_id": "136", "url": "https://rr1.googlevideo.com/videoplayback?itag=136", "protocol": "https", "ext": "mp4", "vcodec": "avc1.4d401f", "acodec": "none", "width": 1280, "height": 720, "fps": 30, "filesize": 20000000, "tbr": 1100 },
+    { "format_id": "298", "url": "https://rr1.googlevideo.com/videoplayback?itag=298", "protocol": "https", "ext": "mp4", "vcodec": "avc1.4d4020", "acodec": "none", "width": 1280, "height": 720, "fps": 60, "filesize": 25000000, "tbr": 1500 },
+    { "format_id": "247", "url": "https://rr1.googlevideo.com/videoplayback?itag=247", "protocol": "https", "ext": "webm", "vcodec": "vp9", "acodec": "none", "width": 1280, "height": 720, "fps": 30, "filesize": 15000000, "tbr": 900 },
+    { "format_id": "137", "url": "https://rr1.googlevideo.com/videoplayback?itag=137", "protocol": "https", "ext": "mp4", "vcodec": "avc1.640028", "acodec": "none", "width": 1920, "height": 1080, "fps": 30, "filesize": 50000000, "tbr": 2500 },
+    { "format_id": "248", "url": "https://rr1.googlevideo.com/videoplayback?itag=248", "protocol": "https", "ext": "webm", "vcodec": "vp9", "acodec": "none", "width": 1920, "height": 1080, "fps": 30, "filesize": 30000000, "tbr": 1800 },
+    { "format_id": "313", "url": "https://rr1.googlevideo.com/videoplayback?itag=313", "protocol": "https", "ext": "webm", "vcodec": "vp9", "acodec": "none", "width": 3840, "height": 2160, "fps": 30, "filesize_approx": 600000000, "tbr": 12000 },
+    { "format_id": "140", "url": "https://rr1.googlevideo.com/videoplayback?itag=140", "protocol": "https", "ext": "m4a", "vcodec": "none", "acodec": "mp4a.40.2", "filesize": 3000000, "tbr": 129 },
+    { "format_id": "251", "url": "https://rr1.googlevideo.com/videoplayback?itag=251", "protocol": "https", "ext": "webm", "vcodec": "none", "acodec": "opus", "filesize": 3200000, "tbr": 140 }
+  ]
+}

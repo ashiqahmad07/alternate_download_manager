@@ -1,0 +1,130 @@
+# Builds ADM with warnings as errors and runs both test suites, on every push and pull request.
+# Each command is its own step, and bash stops at the first failure, so any failing command fails the run.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+# One run per branch at a time: a newer push cancels the run before it.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: windows-2022
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build, with warnings as errors
+        run: dotnet build ADM.sln -c Release -warnaserror
+
+      - name: Engine tests
+        run: dotnet test tests/ADM.Core.Tests -c Release --no-build --logger trx --results-directory TestResults
+
+      - name: Extension tests
+        run: node --test tests/extension/*.test.mjs
+
+      - name: Pack the extension
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/pack-extension.ps1 -Out packages
+
+      # The checks addons.mozilla.org runs before it signs an add-on; an error fails the run.
+      - name: Firefox add-on, through Mozilla's checks
+        run: mkdir firefox-addon && unzip -q packages/ADM-firefox-*-unsigned.xpi -d firefox-addon && npx --yes web-ext@8.10.0 lint --source-dir firefox-addon
+
+      - name: Keep the engine test results
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults
+          path: TestResults
+
+  # The per-user installer, tested on the runner's fresh Windows: it installs, refuses to replace a running ADM, upgrades
+  # an older build keeping state.json, and uninstalls leaving nothing behind. The setup is kept as the artifact ADM-Setup.
+  installer:
+    needs: build-and-test
+    runs-on: windows-2022
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Inno Setup, if the runner lacks it
+        run: if (-not (Test-Path "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe")) { choco install innosetup --no-progress -y }
+
+      - name: Build an older installer to upgrade from
+        run: ./scripts/build-installer.ps1 -Version 0.0.1
+
+      - name: Build the installer
+        id: setup
+        run: |
+          $setup = ./scripts/build-installer.ps1 | Select-Object -Last 1
+          "path=$setup" >> $env:GITHUB_OUTPUT
+
+      - name: Install, upgrade and uninstall
+        run: ./scripts/test-installer.ps1 -Old dist/installer/ADM-Setup-0.0.1.exe -New "${{ steps.setup.outputs.path }}"
+
+      - name: Keep the installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: ADM-Setup
+          path: ${{ steps.setup.outputs.path }}
+          if-no-files-found: error
+
+  # A v* tag publishes a GitHub release: the installer the job above built and tested, and the extension's packages.
+  # Release notes are made from the commits since the tag before.
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: installer
+    runs-on: windows-2022
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: The tag matches the version in Directory.Build.props
+        run: |
+          $version = ([xml](Get-Content Directory.Build.props -Raw)).Project.PropertyGroup.Version
+          if ("v$version" -ne $env:GITHUB_REF_NAME) { throw "The tag is $env:GITHUB_REF_NAME, but Directory.Build.props says $version." }
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ADM-Setup
+          path: release
+
+      - name: Pack the extension
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File scripts/pack-extension.ps1 -Out release
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # A tag moved to a rewritten commit runs this again; its release is already out, so it stays as it is.
+          gh release view $env:GITHUB_REF_NAME *> $null
+          if ($LASTEXITCODE -eq 0) { "The release for $env:GITHUB_REF_NAME is already out; it stays as it is."; exit 0 }
+          $files = Get-ChildItem release -File | ForEach-Object FullName
+          gh release create $env:GITHUB_REF_NAME @files --title "ADM $($env:GITHUB_REF_NAME.TrimStart('v'))" --generate-notes
+          if ($LASTEXITCODE -ne 0) { throw "gh release create failed." }

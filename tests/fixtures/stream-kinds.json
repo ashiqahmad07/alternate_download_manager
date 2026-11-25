@@ -1,0 +1,10 @@
+[
+  { "name": "an HLS playlist", "url": "https://a.com/v/master.m3u8", "kind": "hls" },
+  { "name": "an HLS playlist with a token, in capitals", "url": "https://a.com/v/MASTER.M3U8?token=1", "kind": "hls" },
+  { "name": "a DASH manifest", "url": "https://a.com/v/stream.mpd", "kind": "dash" },
+  { "name": "a DASH manifest with a query and a fragment", "url": "https://a.com/v/Stream.MPD?t=1#start", "kind": "dash" },
+  { "name": "a file", "url": "https://a.com/v/film.mp4", "kind": "http" },
+  { "name": "a file in a folder named like a manifest", "url": "https://a.com/stream.mpd/film.mp4", "kind": "http" },
+  { "name": "a longer extension", "url": "https://a.com/v/stream.mpd4", "kind": "http" },
+  { "name": "a page", "url": "https://a.com/watch?v=1", "kind": "http" }
+]

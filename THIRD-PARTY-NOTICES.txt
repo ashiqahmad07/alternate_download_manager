@@ -1,0 +1,78 @@
+Alternate Download Manager (ADM) carries the following third-party software.
+
+ADM's installed program is a self-contained .NET 8 build: it includes the .NET runtime and its
+libraries, Windows Presentation Foundation and the Windows Desktop runtime, and the
+System.Security.Cryptography.ProtectedData package. All of them are from the .NET Foundation, under
+the MIT licence below:
+
+  .NET Runtime                                https://github.com/dotnet/runtime
+  Windows Presentation Foundation             https://github.com/dotnet/wpf
+  Windows Desktop runtime                     https://github.com/dotnet/windowsdesktop
+  System.Security.Cryptography.ProtectedData  https://github.com/dotnet/runtime
+
+The software those projects themselves include, and its notices, are listed in each project's
+THIRD-PARTY-NOTICES.TXT at the addresses above.
+
+-------------------------------------------------------------------------------
+
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+===============================================================================
+
+ADM's installer also carries three programs that ADM runs to read a site's video and to join
+its sound to it. Setup puts them in %LOCALAPPDATA%\ADM\tools, where ADM would otherwise fetch
+them on first use. Each is a separate program under its own licence; licenses\video-tools.txt,
+beside ADM.exe, names the versions carried.
+
+  yt-dlp  The Unlicense (public domain).  https://github.com/yt-dlp/yt-dlp
+          Its Windows program carries Python and the libraries yt-dlp uses, each under its
+          own licence, as its README lists.
+  Deno    The MIT licence, below.  https://github.com/denoland/deno
+  FFmpeg  The GNU Lesser General Public License, whose text is in licenses\ffmpeg-LICENSE.txt.
+          The build is BtbN's LGPL build, https://github.com/BtbN/FFmpeg-Builds, from FFmpeg's
+          source at https://github.com/FFmpeg/FFmpeg, at the commit its version names.
+
+-------------------------------------------------------------------------------
+
+MIT License
+
+Copyright 2018-2026 the Deno authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
